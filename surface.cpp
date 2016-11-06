@@ -4,20 +4,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define KNOTS 8
+#define KNOTS_CURVE 10
+#define CTRLPOINTS 4
+#define CTRLPOINTS_CURVE 7
+
 float angx, angy;
 int showPoints = 0;
 GLUnurbsObj *theNurb = NULL;
-GLfloat ctlpoints[4][4][3] = {
+GLfloat ctlpoints[CTRLPOINTS][CTRLPOINTS][3] = {
 	{ { -0.6, 1.0, -1.5 }, { -0.3, 1.0, -1.6 }, { 0.3, 1.0, -1.6 }, { 0.6, 1.0, -1.5 } },
 	{ { -1.5, 1.0, -0.5 }, { -0.5, 5.0,  0.0 }, { 0.5, 5.0,  0.0 }, { 1.5, 1.0, -0.5 } },
 	{ { -1.5, 1.0,  0.5 }, { -0.5, 5.0,  0.0 }, { 0.5, 5.0,  0.0 }, { 1.5, 1.0,  0.5 } },
 	{ { -0.7, 1.0,  1.5 }, { -0.5, 3.0,  1.7 }, { 0.5, 3.0,  1.7 }, { 0.7, 1.0,  1.5 } }
 };
+GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
+	{  5.0, -5.0,  0.0,  1.0 },
+	{ -5.0,  2.0,  0.0,  1.0 },
+	{ -2.0,  5.0,  0.0,  1.0 },
+	{  0.0,  2.0,  0.0,  1.0 },
+	{  2.0,  5.0,  0.0,  1.0 },
+	{  5.0,  2.0,  0.0,  1.0 },
+	{ -5.0, -5.0,  0.0,  1.0 },
+};
 
 void init_surface(void) {
 	int u, v;
-	for (u = 0; u < 4; u++) {
-		for (v = 0; v < 4; v++) {
+	for (u = 0; u < CTRLPOINTS; u++) {
+		for (v = 0; v < CTRLPOINTS; v++) {
 			ctlpoints[u][v][0] = 2.0 * ((GLfloat) u - 1.5);
 			ctlpoints[u][v][1] = 2.0 * ((GLfloat) v - 1.5);
 
@@ -30,7 +44,7 @@ void init_surface(void) {
 void nurbsError(GLenum errorCode) {
 	const GLubyte *estring = NULL;
 	estring = gluErrorString(errorCode);
-	fprintf (stderr, "Nurbs Error: %s\n", estring);
+	fprintf (stderr, "NURBS Error: %s\n", estring);
 	exit(-1);
 }
 
@@ -50,7 +64,7 @@ void init(void) {
 	glEnable(GL_AUTO_NORMAL);
 	glEnable(GL_NORMALIZE);
 
-	init_surface();
+	// init_surface();
 
 	theNurb = gluNewNurbsRenderer();
 	/* value should be set to be either GLU_NURBS_RENDERER or GLU_NURBS_TESSELLATOR.
@@ -88,28 +102,64 @@ void init(void) {
 
 void display(void) {
 	int i, j;
-	GLfloat knots[8] = {0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0};
+	GLfloat knots[KNOTS] = {0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0};
+	GLfloat knots_curve[KNOTS_CURVE] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.5, 0.6, 0.7, 0.8, 0.9};
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
-		glRotatef(330.0, 1.,0.,0.);
+		glRotatef(330.0, 1.0, 0.0, 0.0);
 		glScalef (0.3, 0.3, 0.3);
 
 		if (angx != 0) glRotated(angx, 1, 0, 0);
 		if (angy != 0) glRotated(angy, 0, 1, 0);
 
-		gluBeginSurface(theNurb);
-			gluNurbsSurface(theNurb, 8, knots, 8, knots, 4 * 3, 3, &ctlpoints[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
-		gluEndSurface(theNurb);
+		gluBeginCurve(theNurb);
+			/* void gluNurbsCurve(GLUnurbs* nurb, GLint knotCount, GLfloat * knots, GLint stride, GLfloat * control, GLint order, GLenum type);
+			 * knotCount:	Specifies the number of knots in knots. knotCount equals the number of control points plus the order.
+			 * knots:			Specifies an array of knotCount nondecreasing knot values.
+			 * stride:		Specifies the offset (as a number of single-precision floating-point values) between successive curve control points.
+			 * control:		Specifies a pointer to an array of control points. The coordinates must agree with type, specified below.
+			 * order:			Specifies the order of the NURBS curve. order equals degree + 1, hence a cubic curve has an order of 4.
+			 * type:			Specifies the type of the curve. If this curve is defined within a gluBeginCurve/gluEndCurve pair, then the
+			 *						type can be any of the valid one-dimensional evaluator types (such as GLU_MAP1_VERTEX_3 or GLU_MAP1_COLOR_4).
+			 *						Between a gluBeginTrim/gluEndTrim pair, the only valid types are GLU_MAP1_TRIM_2 and GLU_MAP1_TRIM_3.
+			 **/
+			gluNurbsCurve(theNurb, KNOTS_CURVE, knots_curve, 4, &ctlpoints_curve[0][0], 3, GL_MAP1_VERTEX_3);
+		gluEndCurve(theNurb);
+
+		// gluBeginSurface(theNurb);
+			/* void gluNurbsSurface(GLUnurbs* nurb, GLint sKnotCount, GLfloat* sKnots, GLint tKnotCount, GLfloat* tKnots, GLint sStride,
+			 * GLint tStride, GLfloat* control, GLint sOrder, GLint tOrder, GLenum type);
+		 	 * sKnotCount:	Specifies the number of knots in the parametric u direction.
+		 	 * sKnots:			Specifies an array of sKnotCount nondecreasing knot values in the parametric u direction.
+			 * tKnotCount: 	Specifies the number of knots in the parametric v direction.
+		 	 * tKnots:			Specifies an array of tKnotCount nondecreasing knot values in the parametric v direction.
+		 	 * sStride:			Specifies the offset (as a number of single-precision floating-point values) between
+			 * 							successive control points in the parametric u direction in control.
+		 	 * tStride:			Specifies the offset (in single-precision floating-point values) between successive
+			 * 							control points in the parametric v direction in control.
+		 	 * control:			Specifies an array containing control points for the NURBS surface. The offsets between
+			 * 							successive control points in the parametric u and v directions are given by sStride and tStride.
+		 	 * sOrder:			Specifies the order of the NURBS surface in the parametric u direction. The order is one
+			 * 							more than the degree, hence a surface that is cubic in u has a u order of 4.
+		 	 * tOrder:			Specifies the order of the NURBS surface in the parametric v direction. The order is one
+			 * 							more than the degree, hence a surface that is cubic in v has a v order of 4.
+		 	 * type:				Specifies type of the surface. type can be any of the valid two-dimensional evaluator
+			 * 							types (such as GLU_MAP2_VERTEX_3 or GLU_MAP2_COLOR_4).
+			 * Note that a gluNurbsSurface with sKnotCount knots in the u direction and tKnotCount knots in the v direction
+			 * with orders sOrder and tOrder must have (sKnotCount - sOrder) times (tKnotCount - tOrder) control points.
+			 **/
+			// gluNurbsSurface(theNurb, KNOTS, knots, KNOTS, knots, CTRLPOINTS * 3, 3, &ctlpoints[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+		// gluEndSurface(theNurb);
 
 		if (showPoints) {
 			glPointSize(5.0);
 			glDisable(GL_LIGHTING); // why this?
 			glColor3f(1.0, 1.0, 0.0);
 			glBegin(GL_POINTS);
-				for (i = 0; i < 4; i++)
-					for (j = 0; j < 4; j++)
+				for (i = 0; i < CTRLPOINTS; i++)
+					for (j = 0; j < CTRLPOINTS; j++)
 						glVertex3f(ctlpoints[i][j][0], ctlpoints[i][j][1], ctlpoints[i][j][2]);
 			glEnd();
 			glEnable(GL_LIGHTING);
@@ -120,12 +170,12 @@ void display(void) {
 
 void mouse(int button, int state, int x, int y) {
 	if (button ==  GLUT_RIGHT_BUTTON)
-		if (state == GLUT_DOWN)
+		// if (state == GLUT_DOWN)
 			angx += 15;
 
 	if (button ==  GLUT_LEFT_BUTTON)
-		if (state == GLUT_DOWN)
-		angy += 15;
+		// if (state == GLUT_DOWN)
+			angy += 15;
 
 	glutPostRedisplay();
 }
@@ -156,14 +206,14 @@ void keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize (500, 500);
-	glutInitWindowPosition (100, 100);
+	glutInitWindowSize(500, 500);
+	glutInitWindowPosition(100, 100);
 	glutCreateWindow(argv[0]);
 	init();
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutDisplayFunc(display);
-	glutKeyboardFunc (keyboard);
+	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;
 }
