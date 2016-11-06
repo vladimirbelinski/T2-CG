@@ -1,13 +1,14 @@
+#include <math.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <GL/glu.h>
+#include <stdlib.h>
+#include <GL/glut.h>
 
 #define KNOTS 8
-#define KNOTS_CURVE 10
+#define KNOTS_CURVE 12
 #define CTRLPOINTS 4
-#define CTRLPOINTS_CURVE 7
+#define CTRLPOINTS_CURVE 9
 
 float angx, angy;
 int showPoints = 0;
@@ -19,14 +20,30 @@ GLfloat ctlpoints[CTRLPOINTS][CTRLPOINTS][3] = {
 	{ { -0.7, 1.0,  1.5 }, { -0.5, 3.0,  1.7 }, { 0.5, 3.0,  1.7 }, { 0.7, 1.0,  1.5 } }
 };
 GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
-	{  5.0, -5.0,  0.0,  1.0 },
-	{ -5.0,  2.0,  0.0,  1.0 },
-	{ -2.0,  5.0,  0.0,  1.0 },
-	{  0.0,  2.0,  0.0,  1.0 },
-	{  2.0,  5.0,  0.0,  1.0 },
-	{  5.0,  2.0,  0.0,  1.0 },
-	{ -5.0, -5.0,  0.0,  1.0 },
+	{ -5.0,  5.0,  0.0,  sin(M_PI / 4.0)},
+	{  0.0,  5.0,  0.0,              1.0},
+	{  5.0,  5.0,  0.0,  sin(M_PI / 4.0)},
+
+	{  5.0,  0.0,  0.0,              1.0},
+	{  5.0, -5.0,  0.0,  sin(M_PI / 4.0)},
+
+	{  0.0, -5.0,  0.0,              1.0},
+	{ -5.0, -5.0,  0.0,  sin(M_PI / 4.0)},
+
+	{ -5.0,  0.0,  0.0,              1.0},
+	{ -5.0,  5.0,  0.0,  sin(M_PI / 4.0)}
 };
+// GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
+// 	{  0.0, -4.0,  0.0,              1.0 },
+// 	{ -4.0, -4.0,  0.0,  sin(M_PI / 4.0) },
+// 	{ -4.0,  0.0,  0.0,              1.0 },
+// 	{ -4.0,  4.0,  0.0,  sin(M_PI / 4.0) },
+// 	{  0.0,  4.0,  0.0,              1.0 },
+// 	{  4.0,  4.0,  0.0,  sin(M_PI / 4.0) },
+// 	{  4.0,  0.0,  0.0,              1.0 },
+// 	{  4.0, -4.0,  0.0,  sin(M_PI / 4.0) },
+// 	{  0.0, -4.0,  0.0,              1.0 }
+// };
 
 void init_surface(void) {
 	int u, v;
@@ -103,7 +120,7 @@ void init(void) {
 void display(void) {
 	int i, j;
 	GLfloat knots[KNOTS] = {0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0};
-	GLfloat knots_curve[KNOTS_CURVE] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.5, 0.6, 0.7, 0.8, 0.9};
+	GLfloat knots_curve[KNOTS_CURVE] = {0.0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0, 1.0, 1.25, 1.25};
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
