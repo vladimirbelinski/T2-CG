@@ -4,27 +4,32 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-GLfloat ctlpoints[4][4][3];
+GLfloat ctlpoints[4][4][3] = {
+	{ { -0.6, 1.0, -1.5 },{ -0.3, 1.0,-1.6 },{ 0.3, 1.0, -1.6 },{ 0.6, 1.0,-1.5 } },
+	{ { -1.5, 1.0, -0.5 },{ -0.5, 5.0, 0.0 },{ 0.5, 5.0, 0.0 },{ 1.5, 1.0,-0.5 } },
+	{ { -1.5, 1.0,  0.5 },{ -0.5, 5.0, 0.0 },{ 0.5, 5.0, 0.0 },{ 1.5, 1.0, 0.5 } },
+	{ { -0.7, 1.0,  1.5 },{ -0.5, 3.0, 1.7 },{ 0.5, 3.0,  1.7 },{ 0.7, 1.0, 1.5 } }
+};
 int showPoints = 0;
 float angx, angy;
 
 GLUnurbsObj *theNurb;
 
-void init_surface(void)
-{
-   int u, v;
-   for (u = 0; u < 4; u++) {
-      for (v = 0; v < 4; v++) {
-         ctlpoints[u][v][0] = 2.0*((GLfloat)u - 1.5);
-         ctlpoints[u][v][1] = 2.0*((GLfloat)v - 1.5);
-
-         if ( (u == 1 || u == 2) && (v == 1 || v == 2))
-            ctlpoints[u][v][2] = 3.0;
-         else
-            ctlpoints[u][v][2] = -3.0;
-      }
-   }
-}
+// void init_surface(void)
+// {
+//    int u, v;
+//    for (u = 0; u < 4; u++) {
+//       for (v = 0; v < 4; v++) {
+//          ctlpoints[u][v][0] = 2.0*((GLfloat)u - 1.5);
+//          ctlpoints[u][v][1] = 2.0*((GLfloat)v - 1.5);
+//
+//          if ( (u == 1 || u == 2) && (v == 1 || v == 2))
+//             ctlpoints[u][v][2] = 3.0;
+//          else
+//             ctlpoints[u][v][2] = -3.0;
+//       }
+//    }
+// }
 
 void nurbsError(GLenum errorCode)
 {
@@ -52,7 +57,7 @@ void init(void)
    glEnable(GL_AUTO_NORMAL);
    glEnable(GL_NORMALIZE);
 
-   init_surface();
+   //init_surface();
 
    theNurb = gluNewNurbsRenderer();
    gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 25.0);
