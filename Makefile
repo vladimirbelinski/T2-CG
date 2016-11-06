@@ -1,7 +1,7 @@
 all: surface
 
 surface: surface.cpp
-	g++ surface.cpp -lGL -lGLU -lglut -o surface
+	g++ surface.cpp -o surface.o -lGL -lGLU -lglut -lm
 
 clean:
-	rm surface
+	rm surface.o
