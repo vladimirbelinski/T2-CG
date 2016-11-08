@@ -5,35 +5,39 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 
-#define KNOTS 8
-#define KNOTS_CURVE 12
-#define CTRLPOINTS 4
-#define CTRLPOINTS_CURVE 9
+#define CTRLPOINTS_CURVE_U 6
+#define CTRLPOINTS_CURVE_V 4
+
+const double PAN_STEP = 1.0;
+const double ONE_STEP =  M_PI / 260.0;
+const double SIN_ONE_STEP = sin(ONE_STEP);
+const double COS_ONE_STEP = cos(ONE_STEP);
+#define DEF_CAM_X 0.0
+#define DEF_CAM_Y 0.0
+#define DEF_CAM_Z 15.0
+
+// the position the camera points to
+double center_x = 0.0, center_y = 0.0, center_z = 0.0;
+// the position of the camera
+double cam_x = DEF_CAM_X, cam_y = DEF_CAM_Y, cam_z = DEF_CAM_Z;
 
 float angx, angy;
 int showPoints = 0;
 GLUnurbsObj *theNurb = NULL;
-GLfloat ctlpoints[CTRLPOINTS][CTRLPOINTS][3] = {
-	{ { -0.6, 1.0, -1.5 }, { -0.3, 1.0, -1.6 }, { 0.3, 1.0, -1.6 }, { 0.6, 1.0, -1.5 } },
-	{ { -1.5, 1.0, -0.5 }, { -0.5, 5.0,  0.0 }, { 0.5, 5.0,  0.0 }, { 1.5, 1.0, -0.5 } },
-	{ { -1.5, 1.0,  0.5 }, { -0.5, 5.0,  0.0 }, { 0.5, 5.0,  0.0 }, { 1.5, 1.0,  0.5 } },
-	{ { -0.7, 1.0,  1.5 }, { -0.5, 3.0,  1.7 }, { 0.5, 3.0,  1.7 }, { 0.7, 1.0,  1.5 } }
+GLfloat knots_u[CTRLPOINTS_CURVE_U + 4], knots_v[CTRLPOINTS_CURVE_V + 4];
+GLfloat ratio_u = 1.0 / (CTRLPOINTS_CURVE_U + 4), ratio_v = 1.0 / (CTRLPOINTS_CURVE_V + 4);
+
+GLfloat ctlpoints_curve[CTRLPOINTS_CURVE_U][CTRLPOINTS_CURVE_V][4] = {
+	{ {-1.5, 0.0,  -1.4}, {  -0.5,   0.0,  -1.5}, {  0.5,   0.0,  -1.5}, {1.5, 0.0,  -1.4} },
+	{ {-2.5, 0.0, -1.35}, { -3.00, -0.25, -1.40}, { 3.00, -0.25, -1.40}, {2.5, 0.0, -1.35} },
+	{ {-2.5, 0.0,  -0.5}, { -2.75, -0.25, -1.40}, { 2.75, -0.25, -1.40}, {2.5, 0.0,  -0.5} },
+	{ {-2.5, 0.0,   0.5}, { -2.75, -0.25,  1.30}, { 2.75, -0.25,  1.40}, {2.5, 0.0,   0.5} },
+	{ {-2.5, 0.0,  1.35}, { -3.00, -0.25,  1.40}, { 3.00, -0.25,  1.40}, {2.5, 0.0,  1.35} },
+	{ {-1.5, 0.0,   1.4}, {  -0.5,   0.0,   1.5}, {  0.5,   0.0,   1.5}, {1.5, 0.0,   1.4} }
 };
-GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
-	{ -5.0,  5.0,  0.0,  sin(M_PI / 4.0)},
-	{  0.0,  5.0,  0.0,              1.0},
-	{  5.0,  5.0,  0.0,  sin(M_PI / 4.0)},
 
-	{  5.0,  0.0,  0.0,              1.0},
-	{  5.0, -5.0,  0.0,  sin(M_PI / 4.0)},
-
-	{  0.0, -5.0,  0.0,              1.0},
-	{ -5.0, -5.0,  0.0,  sin(M_PI / 4.0)},
-
-	{ -5.0,  0.0,  0.0,              1.0},
-	{ -5.0,  5.0,  0.0,  sin(M_PI / 4.0)}
-};
-// GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
+// circle
+// GLfloat ctlpoints_curve[CTRLPOINTS_CURVE_U][4] = {
 // 	{  0.0, -4.0,  0.0,              1.0 },
 // 	{ -4.0, -4.0,  0.0,  sin(M_PI / 4.0) },
 // 	{ -4.0,  0.0,  0.0,              1.0 },
@@ -45,19 +49,6 @@ GLfloat ctlpoints_curve[CTRLPOINTS_CURVE][4] = {
 // 	{  0.0, -4.0,  0.0,              1.0 }
 // };
 
-void init_surface(void) {
-	int u, v;
-	for (u = 0; u < CTRLPOINTS; u++) {
-		for (v = 0; v < CTRLPOINTS; v++) {
-			ctlpoints[u][v][0] = 2.0 * ((GLfloat) u - 1.5);
-			ctlpoints[u][v][1] = 2.0 * ((GLfloat) v - 1.5);
-
-			if ((u == 1 || u == 2) && (v == 1 || v == 2)) ctlpoints[u][v][2] = 3.0;
-			else ctlpoints[u][v][2] = -3.0;
-		}
-	}
-}
-
 void nurbsError(GLenum errorCode) {
 	const GLubyte *estring = NULL;
 	estring = gluErrorString(errorCode);
@@ -66,22 +57,52 @@ void nurbsError(GLenum errorCode) {
 }
 
 void init(void) {
-	GLfloat mat_diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 100.0 };
+	glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	// From documentation:
+  // The position is transformed by the modelview matrix when glLight is called (just as if
+  // it were a point), and it is stored in eye coordinates. If the w component of the position
+  // is 0, the light is treated as a directional source. Diffuse and specular lighting calculations
+  // take the light's direction, but not its actual position, into account, and attenuation is
+  // disabled. Otherwise, diffuse and specular lighting calculations are based on the actual
+  // location of the light in eye coordinates, and attenuation is enabled.
+  const GLfloat light0_position[] = {25.0, 25.0, 25.0, 1.0};
+  glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+  const GLfloat light1_position[] = {-25.0, -25.0, -25.0, 1.0};
+  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+  const GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+  const GLfloat light0_color[] = {1.0, 1.0, 1.0, 1.0};
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light0_color);
+  const GLfloat light1_color[] = {0.0, 0.5, 1.0, 1.0};
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, light1_color);
+  const GLfloat light_ambient_global[] = {0.2, 0.2, 0.2, 1.0}; // default is 0.2, 0.2, 0.2, 1.0
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  // glEnable(GL_LIGHT1);
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_DEPTH_TEST);
+	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
+	// This means that glMaterial will control the polygon's specular and emission
+	// colours and the ambient and diffuse will both be set using glColor."
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	const GLfloat material_specular[] = {1.0, 1.0, 1.0, 1.0};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
+	const GLfloat material_shininess[] = {128.0}; // 0 to 128. The higher, the "thinner" the "little white glow"
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material_shininess);
+
+	glShadeModel(GL_SMOOTH); // GL_SMOOTH is the default
+
 	glEnable(GL_AUTO_NORMAL);
 	glEnable(GL_NORMALIZE);
 
-	// init_surface();
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	theNurb = gluNewNurbsRenderer();
 	/* value should be set to be either GLU_NURBS_RENDERER or GLU_NURBS_TESSELLATOR.
@@ -115,37 +136,56 @@ void init(void) {
 	 **/
 	gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
 	gluNurbsCallback(theNurb, GLU_ERROR, (GLvoid (*)()) nurbsError);
+
+	knots_u[0] =  0.0;
+	knots_u[1] =  0.0;
+	knots_u[2] =  0.0;
+	knots_u[3] =  0.0;
+	knots_u[4] =  0.5;
+	knots_u[5] =  0.5;
+	knots_u[6] =  1.0;
+	knots_u[7] =  1.0;
+	knots_u[8] =  1.0;
+	knots_u[9] =  1.0;
+
+	knots_v[0] = 0.0;
+	knots_v[1] = 0.0;
+	knots_v[2] = 0.0;
+	knots_v[3] = 0.0;
+	knots_v[4] = 1.0;
+	knots_v[5] = 1.0;
+	knots_v[6] = 1.0;
+	knots_v[7] = 1.0;
+	// knots_u[9] = knots_v[9] = 0.78;
+	// knots_u[10] = knots_v[10] = 1.0;
+	// printf("knots_u:\n");
+	// for (i = 1; i <= CTRLPOINTS_CURVE_U + 4; i++) {
+	// 	knots_u[i - 1] = i * 0.1;
+	// 	// knots_u[i] = i * ratio_u;
+	// 	printf("[%f]", knots_u[i]);
+	// }
+	// printf("\nknots_v:\n");
+	// for (i = 1; i <= CTRLPOINTS_CURVE_V + 4; i++) {
+	// 	knots_v[i - 1] = i * 0.1;
+	// 	// knots_v[i] = i * ratio_v;
+	// 	printf("[%f]", knots_v[i]);
+	// }
+	// printf("\n");
 }
 
 void display(void) {
 	int i, j;
-	GLfloat knots[KNOTS] = {0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0};
-	GLfloat knots_curve[KNOTS_CURVE] = {0.0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1.0, 1.0, 1.0, 1.25, 1.25};
 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
+
 	glPushMatrix();
-		glRotatef(330.0, 1.0, 0.0, 0.0);
-		glScalef (0.3, 0.3, 0.3);
-
-		if (angx != 0) glRotated(angx, 1, 0, 0);
-		if (angy != 0) glRotated(angy, 0, 1, 0);
-
-		gluBeginCurve(theNurb);
-			/* void gluNurbsCurve(GLUnurbs* nurb, GLint knotCount, GLfloat * knots, GLint stride, GLfloat * control, GLint order, GLenum type);
-			 * knotCount:	Specifies the number of knots in knots. knotCount equals the number of control points plus the order.
-			 * knots:			Specifies an array of knotCount nondecreasing knot values.
-			 * stride:		Specifies the offset (as a number of single-precision floating-point values) between successive curve control points.
-			 * control:		Specifies a pointer to an array of control points. The coordinates must agree with type, specified below.
-			 * order:			Specifies the order of the NURBS curve. order equals degree + 1, hence a cubic curve has an order of 4.
-			 * type:			Specifies the type of the curve. If this curve is defined within a gluBeginCurve/gluEndCurve pair, then the
-			 *						type can be any of the valid one-dimensional evaluator types (such as GLU_MAP1_VERTEX_3 or GLU_MAP1_COLOR_4).
-			 *						Between a gluBeginTrim/gluEndTrim pair, the only valid types are GLU_MAP1_TRIM_2 and GLU_MAP1_TRIM_3.
-			 **/
-			gluNurbsCurve(theNurb, KNOTS_CURVE, knots_curve, 4, &ctlpoints_curve[0][0], 3, GL_MAP1_VERTEX_3);
-		gluEndCurve(theNurb);
-
-		// gluBeginSurface(theNurb);
+		glColor3ub(224, 223, 219);
+		gluBeginSurface(theNurb);
 			/* void gluNurbsSurface(GLUnurbs* nurb, GLint sKnotCount, GLfloat* sKnots, GLint tKnotCount, GLfloat* tKnots, GLint sStride,
 			 * GLint tStride, GLfloat* control, GLint sOrder, GLint tOrder, GLenum type);
 		 	 * sKnotCount:	Specifies the number of knots in the parametric u direction.
@@ -167,69 +207,119 @@ void display(void) {
 			 * Note that a gluNurbsSurface with sKnotCount knots in the u direction and tKnotCount knots in the v direction
 			 * with orders sOrder and tOrder must have (sKnotCount - sOrder) times (tKnotCount - tOrder) control points.
 			 **/
-			// gluNurbsSurface(theNurb, KNOTS, knots, KNOTS, knots, CTRLPOINTS * 3, 3, &ctlpoints[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
-		// gluEndSurface(theNurb);
+			gluNurbsSurface(theNurb, CTRLPOINTS_CURVE_U + 4, knots_u, CTRLPOINTS_CURVE_V + 4, knots_v, CTRLPOINTS_CURVE_V * 4, 4, &ctlpoints_curve[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+		gluEndSurface(theNurb);
 
 		if (showPoints) {
 			glPointSize(5.0);
 			glDisable(GL_LIGHTING); // why this?
-			glColor3f(1.0, 1.0, 0.0);
+			glColor3f(1.0, 0.0, 0.0);
 			glBegin(GL_POINTS);
-				for (i = 0; i < CTRLPOINTS; i++)
-					for (j = 0; j < CTRLPOINTS; j++)
-						glVertex3f(ctlpoints[i][j][0], ctlpoints[i][j][1], ctlpoints[i][j][2]);
+				for (i = 0; i < CTRLPOINTS_CURVE_U; i++)
+					for (j = 0; j < CTRLPOINTS_CURVE_V; j++)
+						glVertex3f(ctlpoints_curve[i][j][0], ctlpoints_curve[i][j][1], ctlpoints_curve[i][j][2]);
 			glEnd();
 			glEnable(GL_LIGHTING);
 		}
 	glPopMatrix();
-	glFlush();
-}
-
-void mouse(int button, int state, int x, int y) {
-	if (button ==  GLUT_RIGHT_BUTTON)
-		// if (state == GLUT_DOWN)
-			angx += 15;
-
-	if (button ==  GLUT_LEFT_BUTTON)
-		// if (state == GLUT_DOWN)
-			angy += 15;
-
-	glutPostRedisplay();
+	glutSwapBuffers();
 }
 
 void reshape(int w, int h) {
-	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+	// Avoid division by 0
+	if (h == 0) h = 1;
+	glViewport(0, 0, w, h);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0, (GLdouble)w/(GLdouble)h, 3.0, 8.0);
+	gluPerspective(45.0 /* angle of view */, (double) w / h /* aspect ratio */ , 0.1, 100.0);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0.0, 0.0, -5.0);
+}
+
+void idle(void) {
+	glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	switch (key) {
-		case 'c':
-		case 'C':
+  double camx = cam_x;
+  double camy = cam_y;
+  double camz = cam_z;
+  switch (key) {
+    case 'w':
+      cam_y = camy * COS_ONE_STEP + camz * SIN_ONE_STEP;
+      cam_z = -camy * SIN_ONE_STEP + camz * COS_ONE_STEP;
+      break;
+    case 'a':
+      cam_x = camx * COS_ONE_STEP - camz * SIN_ONE_STEP;
+      cam_z = camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
+      break;
+    case 's':
+      cam_y = camy * COS_ONE_STEP - camz * SIN_ONE_STEP;
+      cam_z = camy * SIN_ONE_STEP + camz * COS_ONE_STEP;
+      break;
+    case 'd':
+      cam_x = camx * COS_ONE_STEP + camz * SIN_ONE_STEP;
+      cam_z = -camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
+      break;
+    case 'e':
+      cam_x = COS_ONE_STEP * camx + SIN_ONE_STEP * camy;
+      cam_y = -SIN_ONE_STEP * camx + COS_ONE_STEP * camy;
+      break;
+    case 'q':
+      cam_x = COS_ONE_STEP * camx - SIN_ONE_STEP * camy;
+      cam_y = SIN_ONE_STEP * camx + COS_ONE_STEP * camy;
+      break;
+    case 'W':
+      cam_y += PAN_STEP;
+      center_y += PAN_STEP;
+      break;
+    case 'A':
+      cam_x -= PAN_STEP;
+      center_x -= PAN_STEP;
+      break;
+    case 'S':
+      cam_y -= PAN_STEP;
+      center_y -= PAN_STEP;
+      break;
+    case 'D':
+      cam_x += PAN_STEP;
+      center_x += PAN_STEP;
+      break;
+    case '=':
+      if (cam_z > 0) cam_z -= PAN_STEP;
+      else if (cam_z < 0) cam_z += PAN_STEP;
+      break;
+    case '-':
+      if (cam_z >= 0) cam_z += PAN_STEP;
+      else if (cam_z < 0) cam_z -= PAN_STEP;
+      break;
+    case 'c':
+      cam_x = DEF_CAM_X;
+      cam_y = DEF_CAM_Y;
+      cam_z = DEF_CAM_Z;
+      break;
+    case 'C':
+      center_x = center_y = center_z = 0.0;
+      break;
+		case 'p':
+		case 'P':
 			showPoints = !showPoints;
-			glutPostRedisplay();
-			break;
-		case 27: // ESC
-			exit(0);
-			break;
-	}
+  }
 }
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(500, 500);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(720, 720);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow(argv[0]);
 	init();
-	glutReshapeFunc(reshape);
-	glutMouseFunc(mouse);
 	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutIdleFunc(idle);
+	// glutMouseFunc(mouse);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;
