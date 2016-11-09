@@ -22,6 +22,6 @@ const double SIN_NINETY = sin(NINETY);
 const double COS_NINETY = cos(NINETY);
 
 const GLubyte tray_color[] = {224, 223, 219};
-const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 1.0};
+const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 0.5};
 
 void init_gourd(void);
