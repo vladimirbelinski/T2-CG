@@ -247,6 +247,8 @@ void keyboard(unsigned char key, int x, int y) {
   double camy = cam_y;
   double camz = cam_z;
   switch (key) {
+		case 27:
+			exit(0);
     case 'w':
       cam_y = camy * COS_ONE_STEP + camz * SIN_ONE_STEP;
       cam_z = -camy * SIN_ONE_STEP + camz * COS_ONE_STEP;

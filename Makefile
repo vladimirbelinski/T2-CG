@@ -1,9 +1,9 @@
-all: surface
+all: surface.o
 
 run: all
 	./surface.o
 
-surface: surface.cpp
+surface.o: surface.cpp
 	g++ surface.cpp -o surface.o -lGL -lGLU -lglut -lm
 
 clean:
