@@ -1,8 +1,10 @@
 #include <math.h>
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
 #include "surface.h"
+using namespace std;
 
 // the position the camera points to
 double center_x = 0.0, center_y = 0.0, center_z = 0.0;
@@ -13,33 +15,66 @@ bool showPoints = false;
 GLUnurbsObj *nurbs = NULL;
 GLfloat knots_tray_u[CTRLPOINTS_TRAY_U + 4], knots_tray_v[CTRLPOINTS_TRAY_V + 4];
 
-GLfloat ctlpoints_curve[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
-	{ {-1.5, 0.0,  -1.4}, {  -0.5,   0.0,  -1.5}, {  0.5,   0.0,  -1.5}, {1.5, 0.0,  -1.4} },
-	{ {-2.5, 0.0, -1.35}, { -3.00, -0.25, -1.40}, { 3.00, -0.25, -1.40}, {2.5, 0.0, -1.35} },
-	{ {-2.5, 0.0,  -0.5}, { -2.75, -0.25, -1.40}, { 2.75, -0.25, -1.40}, {2.5, 0.0,  -0.5} },
-	{ {-2.5, 0.0,   0.5}, { -2.75, -0.25,  1.30}, { 2.75, -0.25,  1.40}, {2.5, 0.0,   0.5} },
-	{ {-2.5, 0.0,  1.35}, { -3.00, -0.25,  1.40}, { 3.00, -0.25,  1.40}, {2.5, 0.0,  1.35} },
-	{ {-1.5, 0.0,   1.4}, {  -0.5,   0.0,   1.5}, {  0.5,   0.0,   1.5}, {1.5, 0.0,   1.4} }
+GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
+	{ {-1.5, 0.0,  -1.4, 1.0}, {  -0.5,   0.0,  -1.5, 1.0}, {  0.5,   0.0,  -1.5, 1.0}, {1.5, 0.0,  -1.4, 1.0} },
+	{ {-2.5, 0.0, -1.35, 1.0}, { -3.00, -0.25, -1.40, 1.0}, { 3.00, -0.25, -1.40, 1.0}, {2.5, 0.0, -1.35, 1.0} },
+	{ {-2.5, 0.0,  -0.5, 1.0}, { -2.75, -0.25, -1.40, 1.0}, { 2.75, -0.25, -1.40, 1.0}, {2.5, 0.0,  -0.5, 1.0} },
+	{ {-2.5, 0.0,   0.5, 1.0}, { -2.75, -0.25,  1.30, 1.0}, { 2.75, -0.25,  1.40, 1.0}, {2.5, 0.0,   0.5, 1.0} },
+	{ {-2.5, 0.0,  1.35, 1.0}, { -3.00, -0.25,  1.40, 1.0}, { 3.00, -0.25,  1.40, 1.0}, {2.5, 0.0,  1.35, 1.0} },
+	{ {-1.5, 0.0,   1.4, 1.0}, {  -0.5,   0.0,   1.5, 1.0}, {  0.5,   0.0,   1.5, 1.0}, {1.5, 0.0,   1.4, 1.0} }
 };
 
-// circle
-// GLfloat ctlpoints_curve[CTRLPOINTS_TRAY_U][4] = {
-// 	{  0.0, -4.0,  0.0,              1.0 },
-// 	{ -4.0, -4.0,  0.0,  sin(M_PI / 4.0) },
-// 	{ -4.0,  0.0,  0.0,              1.0 },
-// 	{ -4.0,  4.0,  0.0,  sin(M_PI / 4.0) },
-// 	{  0.0,  4.0,  0.0,              1.0 },
-// 	{  4.0,  4.0,  0.0,  sin(M_PI / 4.0) },
-// 	{  4.0,  0.0,  0.0,              1.0 },
-// 	{  4.0, -4.0,  0.0,  sin(M_PI / 4.0) },
-// 	{  0.0, -4.0,  0.0,              1.0 }
-// };
+vector< vector<GLfloat> > gourd;
+GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
+GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
 
 void nurbsError(GLenum errorCode) {
 	const GLubyte *estring = NULL;
 	estring = gluErrorString(errorCode);
 	fprintf (stderr, "NURBS Error: %s\n", estring);
 	exit(-1);
+}
+
+void init_first_gourd_points(void) {
+	int i, j;
+	GLfloat gourd_initial_points[][4] = {
+		{   0.0,  -4.0,  0.0,  1.0},
+		{   2.0,  -4.0,  0.0,  1.0},
+		{   2.5,  -4.0,  0.0,  1.0},
+		{   0.0,  -3.5,  0.0,  1.0},
+		{   1.0,  -3.0,  0.0,  1.0},
+		{   2.0, -2.25,  0.0,  1.0},
+		{   2.0,  0.75,  0.0,  1.0},
+		{  0.75,  0.75,  0.0,  1.0},
+		{   2.5,  2.25,  0.0,  1.0}
+	};
+	for (i = 0; i < CTRLPOINTS_GOURD_U; i++) {
+		for (j = 0; j < 4; j++)
+			ctrlpoints_gourd[i][0][j] = gourd_initial_points[i][j];
+	}
+}
+
+void init_gourd(void) {
+	int i, j, k;
+	init_first_gourd_points();
+	printf("gourd:\n");
+	for (i = 0; i < CTRLPOINTS_GOURD_U; i++)
+		printf("%.2f %.2f %.2f\n", ctrlpoints_gourd[i][0][0], ctrlpoints_gourd[i][0][1], ctrlpoints_gourd[i][0][2]);
+	printf("\n");
+
+	for (i = 1; i < CTRLPOINTS_GOURD_V; i++) {
+		for (j = 0; j < CTRLPOINTS_GOURD_U; j++) {
+			// cam_x = camx * COS_ONE_STEP - camz * SIN_ONE_STEP;
+			ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 1][0] * COS_FORTY_FIVE - ctrlpoints_gourd[j][i - 1][2] * SIN_FORTY_FIVE;
+
+			ctrlpoints_gourd[j][i][1] = ctrlpoints_gourd[j][i - 1][1];
+
+			// cam_z = camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
+			ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 1][0] * SIN_FORTY_FIVE + ctrlpoints_gourd[j][i - 1][2] * COS_FORTY_FIVE;
+
+			ctrlpoints_gourd[j][i][3] = ctrlpoints_gourd[j][i - 1][3];
+		}
+	}
 }
 
 void init(void) {
@@ -89,6 +124,9 @@ void init(void) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	nurbs = gluNewNurbsRenderer();
 	/* value should be set to be either GLU_NURBS_RENDERER or GLU_NURBS_TESSELLATOR.
@@ -142,6 +180,34 @@ void init(void) {
 	knots_tray_v[5] = 1.0;
 	knots_tray_v[6] = 1.0;
 	knots_tray_v[7] = 1.0;
+
+	init_gourd();
+	knots_gourd_u[0] =  0.0;
+	knots_gourd_u[1] =  0.0;
+	knots_gourd_u[2] =  0.0;
+	knots_gourd_u[3] =  0.0;
+	knots_gourd_u[4] =  0.25;
+	knots_gourd_u[5] =  0.5;
+	knots_gourd_u[6] =  0.5;
+	knots_gourd_u[7] =  0.5;
+	knots_gourd_u[8] =  0.75;
+	knots_gourd_u[9] =  1.0;
+	knots_gourd_u[10] =  1.0;
+	knots_gourd_u[11] =  1.0;
+	knots_gourd_u[12] =  1.0;
+
+	knots_gourd_v[0] = 0.0;
+	knots_gourd_v[1] = 0.0;
+	knots_gourd_v[2] = 0.0;
+	knots_gourd_v[3] = 0.0;
+	knots_gourd_v[4] = 0.25;
+	knots_gourd_v[5] = 0.5;
+	knots_gourd_v[6] = 0.5;
+	knots_gourd_v[7] = 0.75;
+	knots_gourd_v[8] = 1.0;
+	knots_gourd_v[9] = 1.0;
+	knots_gourd_v[10] = 1.0;
+	knots_gourd_v[11] = 1.0;
 }
 
 void draw_control_points_tray(void) {
@@ -151,7 +217,19 @@ void draw_control_points_tray(void) {
 		glBegin(GL_POINTS);
 			for (i = 0; i < CTRLPOINTS_TRAY_U; i++)
 				for (j = 0; j < CTRLPOINTS_TRAY_V; j++)
-					glVertex3f(ctlpoints_curve[i][j][0], ctlpoints_curve[i][j][1], ctlpoints_curve[i][j][2]);
+					glVertex3f(ctrlpoints_tray[i][j][0], ctrlpoints_tray[i][j][1], ctrlpoints_tray[i][j][2]);
+		glEnd();
+	glPopMatrix();
+}
+
+void draw_control_points_gourd(void) {
+	int i, j;
+	glPushMatrix();
+		glColor3ubv(tray_color);
+		glBegin(GL_POINTS);
+			for (i = 0; i < CTRLPOINTS_GOURD_U; i++)
+				for (j = 0; j < CTRLPOINTS_GOURD_V; j++)
+					glVertex3f(ctrlpoints_gourd[i][j][0], ctrlpoints_gourd[i][j][1], ctrlpoints_gourd[i][j][2]);
 		glEnd();
 	glPopMatrix();
 }
@@ -160,7 +238,8 @@ void draw_control_points(void) {
 	glPushMatrix();
 		glPointSize(5.0);
 		glDisable(GL_LIGHTING);
-		draw_control_points_tray();
+		// draw_control_points_tray();
+		draw_control_points_gourd();
 		glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
@@ -190,14 +269,21 @@ void draw_tray(void) {
 			 * Note that a gluNurbsSurface with sKnotCount knots in the u direction and tKnotCount knots in the v direction
 			 * with orders sOrder and tOrder must have (sKnotCount - sOrder) times (tKnotCount - tOrder) control points.
 			 **/
-			gluNurbsSurface(nurbs, CTRLPOINTS_TRAY_U + 4, knots_tray_u, CTRLPOINTS_TRAY_V + 4, knots_tray_v, CTRLPOINTS_TRAY_V * 4, 4, &ctlpoints_curve[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+			gluNurbsSurface(nurbs, CTRLPOINTS_TRAY_U + 4, knots_tray_u, CTRLPOINTS_TRAY_V + 4, knots_tray_v, CTRLPOINTS_TRAY_V * 4, 4, &ctrlpoints_tray[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+		gluEndSurface(nurbs);
+	glPopMatrix();
+}
+
+void draw_gourd(void) {
+	glPushMatrix();
+		glColor3ubv(gourd_color);
+		gluBeginSurface(nurbs);
+			gluNurbsSurface(nurbs, CTRLPOINTS_GOURD_U + 4, knots_gourd_u, CTRLPOINTS_GOURD_V + 4, knots_gourd_v, 4, CTRLPOINTS_GOURD_V * 4, &ctrlpoints_gourd[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
 		gluEndSurface(nurbs);
 	glPopMatrix();
 }
 
 void display(void) {
-	int i, j;
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -205,7 +291,8 @@ void display(void) {
 
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
-	draw_tray();
+	// draw_tray();
+	draw_gourd();
 
 	if (showPoints) draw_control_points();
 	glutSwapBuffers();
