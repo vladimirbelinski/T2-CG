@@ -38,39 +38,68 @@ void nurbsError(GLenum errorCode) {
 void init_first_gourd_points(void) {
 	int i, j;
 	GLfloat gourd_initial_points[][4] = {
-		{   0.0,  -4.0,  0.0,  1.0},
-		{   2.0,  -4.0,  0.0,  1.0},
-		{   2.5,  -4.0,  0.0,  1.0},
-		{   0.0,  -3.5,  0.0,  1.0},
-		{   1.0,  -3.0,  0.0,  1.0},
-		{   2.0, -2.25,  0.0,  1.0},
-		{   2.0,  0.75,  0.0,  1.0},
-		{  0.75,  0.75,  0.0,  1.0},
-		{   2.5,  2.25,  0.0,  1.0}
+		{   0.0,   0.0,  0.0,  1.0},
+		{   2.0,   0.0,  0.0,  1.0},
+		{   2.5,   0.0,  0.0,  1.0},
+		{   0.0,   0.5,  0.0,  1.0},
+		{   1.0,   1.0,  0.0,  1.0},
+		{   2.0,  1.75,  0.0,  1.0},
+		{   2.0,  4.75,  0.0,  1.0},
+		{  0.75,  4.75,  0.0,  1.0},
+		{   2.5,  6.25,  0.0,  1.0}
 	};
 	for (i = 0; i < CTRLPOINTS_GOURD_U; i++) {
-		for (j = 0; j < 4; j++)
+		for (j = 0; j < 4; j++) {
 			ctrlpoints_gourd[i][0][j] = gourd_initial_points[i][j];
+			ctrlpoints_gourd[i][CTRLPOINTS_GOURD_V - 1][j] = gourd_initial_points[i][j];
+		}
 	}
 }
 
 void init_gourd(void) {
-	int i, j, k;
+	int i, j, k = 0;
 	init_first_gourd_points();
-	printf("gourd:\n");
-	for (i = 0; i < CTRLPOINTS_GOURD_U; i++)
-		printf("%.2f %.2f %.2f\n", ctrlpoints_gourd[i][0][0], ctrlpoints_gourd[i][0][1], ctrlpoints_gourd[i][0][2]);
-	printf("\n");
-
-	for (i = 1; i < CTRLPOINTS_GOURD_V; i++) {
+	for (i = 1; i < CTRLPOINTS_GOURD_V - 1; i++) {
+		// for (j = 0; j < CTRLPOINTS_GOURD_U; j++) {
+		// 	if (i & 1) {
+		// 		printf("i: %d\n", i);
+		// 		switch (k) {
+		// 			case 0:
+		// 				ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 1][0] + 2.5;
+		// 				ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 1][2];
+		// 				break;
+		// 			case 1:
+		// 				ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 2][0];
+		// 				ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 2][2] - 2.5;
+		// 				break;
+		// 			case 2:
+		// 				ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 2][0] - 2.5;
+		// 				ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 2][2];
+		// 				break;
+		// 			case 3:
+		// 				ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 2][0];
+		// 				ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 2][2] + 2.5;
+		// 		}
+		// 		ctrlpoints_gourd[j][i][3] = SIN_FOURTY_FIVE;
+		// 		k++;
+		// 	} else {
+		// 		// cam_x = camx * COS_ONE_STEP - camz * SIN_ONE_STEP;
+		// 		ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 2][0] * COS_NINETY - ctrlpoints_gourd[j][i - 2][2] * SIN_NINETY;
+		// 		// cam_z = camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
+		// 		ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 2][0] * SIN_NINETY + ctrlpoints_gourd[j][i - 2][2] * COS_NINETY;
+		//
+		// 		ctrlpoints_gourd[j][i][3] = ctrlpoints_gourd[j][i - 2][3];
+		// 	}
+		// 	ctrlpoints_gourd[j][i][1] = ctrlpoints_gourd[j][i - 1][1];
+		// }
 		for (j = 0; j < CTRLPOINTS_GOURD_U; j++) {
 			// cam_x = camx * COS_ONE_STEP - camz * SIN_ONE_STEP;
-			ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 1][0] * COS_FORTY_FIVE - ctrlpoints_gourd[j][i - 1][2] * SIN_FORTY_FIVE;
+			ctrlpoints_gourd[j][i][0] = ctrlpoints_gourd[j][i - 1][0] * COS_FOURTY_FIVE - ctrlpoints_gourd[j][i - 1][2] * SIN_FOURTY_FIVE;
 
 			ctrlpoints_gourd[j][i][1] = ctrlpoints_gourd[j][i - 1][1];
 
 			// cam_z = camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
-			ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 1][0] * SIN_FORTY_FIVE + ctrlpoints_gourd[j][i - 1][2] * COS_FORTY_FIVE;
+			ctrlpoints_gourd[j][i][2] = ctrlpoints_gourd[j][i - 1][0] * SIN_FOURTY_FIVE + ctrlpoints_gourd[j][i - 1][2] * COS_FOURTY_FIVE;
 
 			ctrlpoints_gourd[j][i][3] = ctrlpoints_gourd[j][i - 1][3];
 		}
@@ -203,11 +232,25 @@ void init(void) {
 	knots_gourd_v[4] = 0.25;
 	knots_gourd_v[5] = 0.5;
 	knots_gourd_v[6] = 0.5;
-	knots_gourd_v[7] = 0.75;
-	knots_gourd_v[8] = 1.0;
+	knots_gourd_v[7] = 0.5;
+	knots_gourd_v[8] = 0.75;
 	knots_gourd_v[9] = 1.0;
 	knots_gourd_v[10] = 1.0;
 	knots_gourd_v[11] = 1.0;
+	knots_gourd_v[12] = 1.0;
+	// knots_gourd_v[0] = 0.0;
+	// knots_gourd_v[1] = 0.0;
+	// knots_gourd_v[2] = 0.0;
+	// knots_gourd_v[3] = 0.0;
+	// knots_gourd_v[4] = 0.25;
+	// knots_gourd_v[5] = 0.25;
+	// knots_gourd_v[6] = 0.5;
+	// knots_gourd_v[7] = 0.5;
+	// knots_gourd_v[8] = 0.75;
+	// knots_gourd_v[9] = 0.75;
+	// knots_gourd_v[10] = 1.0;
+	// knots_gourd_v[11] = 1.0;
+	// knots_gourd_v[12] = 1.0;
 }
 
 void draw_control_points_tray(void) {
@@ -225,9 +268,9 @@ void draw_control_points_tray(void) {
 void draw_control_points_gourd(void) {
 	int i, j;
 	glPushMatrix();
-		glColor3ubv(tray_color);
+		glColor4fv(gourd_color);
 		glBegin(GL_POINTS);
-			for (i = 0; i < CTRLPOINTS_GOURD_U; i++)
+			for (i = 1; i < 2; i++)
 				for (j = 0; j < CTRLPOINTS_GOURD_V; j++)
 					glVertex3f(ctrlpoints_gourd[i][j][0], ctrlpoints_gourd[i][j][1], ctrlpoints_gourd[i][j][2]);
 		glEnd();
@@ -276,9 +319,9 @@ void draw_tray(void) {
 
 void draw_gourd(void) {
 	glPushMatrix();
-		glColor3ubv(gourd_color);
+		glColor4fv(gourd_color);
 		gluBeginSurface(nurbs);
-			gluNurbsSurface(nurbs, CTRLPOINTS_GOURD_U + 4, knots_gourd_u, CTRLPOINTS_GOURD_V + 4, knots_gourd_v, 4, CTRLPOINTS_GOURD_V * 4, &ctrlpoints_gourd[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+			gluNurbsSurface(nurbs, CTRLPOINTS_GOURD_U + 4, knots_gourd_u, CTRLPOINTS_GOURD_V + 4, knots_gourd_v, CTRLPOINTS_GOURD_V * 4, 4, &ctrlpoints_gourd[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
 		gluEndSurface(nurbs);
 	glPopMatrix();
 }
