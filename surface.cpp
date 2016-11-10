@@ -15,10 +15,10 @@ double cam_x = DEF_CAM_X, cam_y = DEF_CAM_Y, cam_z = DEF_CAM_Z;
 GLfloat knots_tray_u[CTRLPOINTS_TRAY_U + 4], knots_tray_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
 	{ {-1.5, 0.0,  -1.4, 1.0}, {  -0.5,   0.0,  -1.5, 1.0}, {  0.5,   0.0,  -1.5, 1.0}, {1.5, 0.0,  -1.4, 1.0} },
-	{ {-2.5, 0.0, -1.35, 1.0}, { -3.00, -0.10, -1.40, 1.0}, { 3.00, -0.10, -1.40, 1.0}, {2.5, 0.0, -1.35, 1.0} },
-	{ {-2.5, 0.0,  -0.5, 1.0}, { -2.75, -0.10, -1.40, 1.0}, { 2.75, -0.10, -1.40, 1.0}, {2.5, 0.0,  -0.5, 1.0} },
-	{ {-2.5, 0.0,   0.5, 1.0}, { -2.75, -0.10,  1.30, 1.0}, { 2.75, -0.10,  1.40, 1.0}, {2.5, 0.0,   0.5, 1.0} },
-	{ {-2.5, 0.0,  1.35, 1.0}, { -3.00, -0.10,  1.40, 1.0}, { 3.00, -0.10,  1.40, 1.0}, {2.5, 0.0,  1.35, 1.0} },
+	{ {-2.5, 0.0, -1.35, 1.0}, { -3.00, -0.25, -1.40, 1.0}, { 3.00, -0.25, -1.40, 1.0}, {2.5, 0.0, -1.35, 1.0} },
+	{ {-2.5, 0.0,  -0.5, 1.0}, { -2.75, -0.25, -1.40, 1.0}, { 2.75, -0.25, -1.40, 1.0}, {2.5, 0.0,  -0.5, 1.0} },
+	{ {-2.5, 0.0,   0.5, 1.0}, { -2.75, -0.25,  1.30, 1.0}, { 2.75, -0.25,  1.40, 1.0}, {2.5, 0.0,   0.5, 1.0} },
+	{ {-2.5, 0.0,  1.35, 1.0}, { -3.00, -0.25,  1.40, 1.0}, { 3.00, -0.25,  1.40, 1.0}, {2.5, 0.0,  1.35, 1.0} },
 	{ {-1.5, 0.0,   1.4, 1.0}, {  -0.5,   0.0,   1.5, 1.0}, {  0.5,   0.0,   1.5, 1.0}, {1.5, 0.0,   1.4, 1.0} }
 };
 
@@ -43,7 +43,7 @@ void init_first_gourd_points(void) {
 		{   2.0,  1.75,  0.0,  1.0},
 		{   2.0,  4.75,  0.0,  1.0},
 		{  0.75,  4.75,  0.0,  1.0},
-		{   2.5,  6.10,  0.0,  1.0}
+		{   2.5,  6.25,  0.0,  1.0}
 	};
 	for (i = 0; i < CTRLPOINTS_GOURD_U; i++) {
 		for (j = 0; j < 4; j++) {
@@ -157,7 +157,7 @@ void init(void) {
 	 * conservative when rendering a curve or surface, so the actual length can be somewhat shorter.
 	 * The initial value is 50.0 pixels.
 	 **/
-	gluNurbsProperty(nurbs, GLU_SAMPLING_TOLERANCE, 10.0);
+	gluNurbsProperty(nurbs, GLU_SAMPLING_TOLERANCE, 25.0);
 	/* value can be set to GLU_OUTLINE_POLYGON, GLU_FILL, or GLU_OUTLINE_PATCH.
 	 * When GLU_NURBS_MODE is set to be GLU_NURBS_RENDERER, value defines how a
 	 * & NURBS surface should be rendered. When value is set to GLU_FILL, the surface
@@ -195,7 +195,7 @@ void init(void) {
 	knots_gourd_u[1] =  0.0;
 	knots_gourd_u[2] =  0.0;
 	knots_gourd_u[3] =  0.0;
-	knots_gourd_u[4] =  0.10;
+	knots_gourd_u[4] =  0.25;
 	knots_gourd_u[5] =  0.5;
 	knots_gourd_u[6] =  0.5;
 	knots_gourd_u[7] =  0.5;
@@ -209,7 +209,7 @@ void init(void) {
 	knots_gourd_v[1] = 0.0;
 	knots_gourd_v[2] = 0.0;
 	knots_gourd_v[3] = 0.0;
-	knots_gourd_v[4] = 0.10;
+	knots_gourd_v[4] = 0.25;
 	knots_gourd_v[5] = 0.5;
 	knots_gourd_v[6] = 0.5;
 	knots_gourd_v[7] = 0.5;
