@@ -15,10 +15,10 @@ double cam_x = DEF_CAM_X, cam_y = DEF_CAM_Y, cam_z = DEF_CAM_Z;
 GLfloat knots_tray_u[CTRLPOINTS_TRAY_U + 4], knots_tray_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
 	{ {-1.5, 0.0,  -1.4, 1.0}, {  -0.5,   0.0,  -1.5, 1.0}, {  0.5,   0.0,  -1.5, 1.0}, {1.5, 0.0,  -1.4, 1.0} },
-	{ {-2.5, 0.0, -1.35, 1.0}, { -3.00, -0.25, -1.40, 1.0}, { 3.00, -0.25, -1.40, 1.0}, {2.5, 0.0, -1.35, 1.0} },
-	{ {-2.5, 0.0,  -0.5, 1.0}, { -2.75, -0.25, -1.40, 1.0}, { 2.75, -0.25, -1.40, 1.0}, {2.5, 0.0,  -0.5, 1.0} },
-	{ {-2.5, 0.0,   0.5, 1.0}, { -2.75, -0.25,  1.30, 1.0}, { 2.75, -0.25,  1.40, 1.0}, {2.5, 0.0,   0.5, 1.0} },
-	{ {-2.5, 0.0,  1.35, 1.0}, { -3.00, -0.25,  1.40, 1.0}, { 3.00, -0.25,  1.40, 1.0}, {2.5, 0.0,  1.35, 1.0} },
+	{ {-2.5, 0.0, -1.35, 1.0}, { -3.00, -0.10, -1.40, 1.0}, { 3.00, -0.10, -1.40, 1.0}, {2.5, 0.0, -1.35, 1.0} },
+	{ {-2.5, 0.0,  -0.5, 1.0}, { -2.75, -0.10, -1.40, 1.0}, { 2.75, -0.10, -1.40, 1.0}, {2.5, 0.0,  -0.5, 1.0} },
+	{ {-2.5, 0.0,   0.5, 1.0}, { -2.75, -0.10,  1.30, 1.0}, { 2.75, -0.10,  1.40, 1.0}, {2.5, 0.0,   0.5, 1.0} },
+	{ {-2.5, 0.0,  1.35, 1.0}, { -3.00, -0.10,  1.40, 1.0}, { 3.00, -0.10,  1.40, 1.0}, {2.5, 0.0,  1.35, 1.0} },
 	{ {-1.5, 0.0,   1.4, 1.0}, {  -0.5,   0.0,   1.5, 1.0}, {  0.5,   0.0,   1.5, 1.0}, {1.5, 0.0,   1.4, 1.0} }
 };
 
@@ -43,7 +43,7 @@ void init_first_gourd_points(void) {
 		{   2.0,  1.75,  0.0,  1.0},
 		{   2.0,  4.75,  0.0,  1.0},
 		{  0.75,  4.75,  0.0,  1.0},
-		{   2.5,  6.25,  0.0,  1.0}
+		{   2.5,  6.10,  0.0,  1.0}
 	};
 	for (i = 0; i < CTRLPOINTS_GOURD_U; i++) {
 		for (j = 0; j < 4; j++) {
@@ -84,22 +84,37 @@ void init(void) {
   // location of the light in eye coordinates, and attenuation is enabled.
   const GLfloat light0_position[] = {25.0, 25.0, 25.0, 1.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-  const GLfloat light1_position[] = {-25.0, -25.0, -25.0, 1.0};
+  const GLfloat light1_position[] = {-25.0, 25.0, 25.0, 1.0};
   glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	const GLfloat light2_position[] = {25.0, 25.0, -25.0, 1.0};
+  glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+	const GLfloat light3_position[] = {-25.0, 25.0, -25.0, 1.0};
+  glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
+
   const GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
-  const GLfloat light0_color[] = {1.0, 1.0, 1.0, 1.0};
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, light0_color);
-  const GLfloat light1_color[] = {0.0, 0.5, 1.0, 1.0};
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, light1_color);
+	glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient);
+
+  const GLfloat light_color[] = {1.0, 1.0, 1.0, 1.0};
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_color);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, light_color);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, light_color);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, light_color);
+  glLightfv(GL_LIGHT2, GL_SPECULAR, light_color);
+  glLightfv(GL_LIGHT3, GL_DIFFUSE, light_color);
+  glLightfv(GL_LIGHT3, GL_SPECULAR, light_color);
+
   const GLfloat light_ambient_global[] = {0.2, 0.2, 0.2, 1.0}; // default is 0.2, 0.2, 0.2, 1.0
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
+
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  // glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+	glEnable(GL_LIGHT3);
 
 	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
 	// This means that glMaterial will control the polygon's specular and emission
@@ -142,7 +157,7 @@ void init(void) {
 	 * conservative when rendering a curve or surface, so the actual length can be somewhat shorter.
 	 * The initial value is 50.0 pixels.
 	 **/
-	gluNurbsProperty(nurbs, GLU_SAMPLING_TOLERANCE, 25.0);
+	gluNurbsProperty(nurbs, GLU_SAMPLING_TOLERANCE, 10.0);
 	/* value can be set to GLU_OUTLINE_POLYGON, GLU_FILL, or GLU_OUTLINE_PATCH.
 	 * When GLU_NURBS_MODE is set to be GLU_NURBS_RENDERER, value defines how a
 	 * & NURBS surface should be rendered. When value is set to GLU_FILL, the surface
@@ -180,7 +195,7 @@ void init(void) {
 	knots_gourd_u[1] =  0.0;
 	knots_gourd_u[2] =  0.0;
 	knots_gourd_u[3] =  0.0;
-	knots_gourd_u[4] =  0.25;
+	knots_gourd_u[4] =  0.10;
 	knots_gourd_u[5] =  0.5;
 	knots_gourd_u[6] =  0.5;
 	knots_gourd_u[7] =  0.5;
@@ -194,7 +209,7 @@ void init(void) {
 	knots_gourd_v[1] = 0.0;
 	knots_gourd_v[2] = 0.0;
 	knots_gourd_v[3] = 0.0;
-	knots_gourd_v[4] = 0.25;
+	knots_gourd_v[4] = 0.10;
 	knots_gourd_v[5] = 0.5;
 	knots_gourd_v[6] = 0.5;
 	knots_gourd_v[7] = 0.5;
