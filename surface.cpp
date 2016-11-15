@@ -22,20 +22,21 @@ GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
 	{ {-1.5, 0.0,   1.4, 1.0}, {  -0.5,   0.0,   1.5, 1.0}, {  0.5,   0.0,   1.5, 1.0}, {1.5, 0.0,   1.4, 1.0} }
 };
 
+GLfloat knots_spatula_u[CTRLPOINTS_SPATULA_U + 4], knots_spatula_v[CTRLPOINTS_SPATULA_V + 4];
 GLfloat ctrlpoints_spatula[CTRLPOINTS_SPATULA_U][CTRLPOINTS_SPATULA_V][4] = {
-{  0.00,   0.0,  0.0, 1.0 }, {  0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 },
-{ -0.50,   0.0,  0.0, 1.0 }, { -0.17,   0.0,  0.0, 1.0 }, { 0.17,   0.0,  0.0, 1.0 }, { 0.50,   0.0,  0.0, 1.0 },
-{ -0.25,   3.5,  0.0, 1.0 }, { -0.08,   3.5,  0.0, 1.0 }, { 0.08,   3.5,  0.0, 1.0 }, { 0.25,   3.5,  0.0, 1.0 },
-{ -0.13,   7.5,  1.0, 1.0 }, { -0.04,   7.5,  1.0, 1.0 }, { 0.04,   7.5,  1.0, 1.0 }, { 0.13,   7.5,  1.0, 1.0 },
-{  0.00,  11.5,  1.5, 1.0 }, {  0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 },
-{ -0.10,  14.0,  0.0, 1.0 }, { -0.03,  14.0,  0.0, 1.0 }, { 0.03,  14.0,  0.0, 1.0 }, { 0.10,  14.0,  0.0, 1.0 },
-{ -0.63, 14.75,  0.0, 1.0 }, { -0.21, 14.75,  0.0, 1.0 }, { 0.21, 14.75,  0.0, 1.0 }, { 0.63, 14.75,  0.0, 1.0 },
-{ -1.05, 16.75,  0.0, 1.0 }, { -0.35, 16.75,  0.0, 1.0 }, { 0.35, 16.75,  0.0, 1.0 }, { 1.05, 16.75,  0.0, 1.0 },
-{ -0.78,  21.0,  0.0, 1.0 }, { -0.26,  21.0,  0.0, 1.0 }, { 0.26,  21.0,  0.0, 1.0 }, { 0.78,  21.0,  0.0, 1.0 },
-{ -0.58,  24.5,  0.0, 1.0 }, { -0.19,  24.5,  0.0, 1.0 }, { 0.19,  24.5,  0.0, 1.0 }, { 0.58,  24.5,  0.0, 1.0 },
-{ -0.30,  29.5,  0.0, 1.0 }, { -0.10,  29.5,  0.0, 1.0 }, { 0.10,  29.5,  0.0, 1.0 }, { 0.30,  29.5,  0.0, 1.0 },
-{ -0.15,  29.0,  0.0, 1.0 }, { -0.05,  29.0,  0.0, 1.0 }, { 0.05,  29.0,  0.0, 1.0 }, { 0.15,  29.0,  0.0, 1.0 },
-{  0.00,  29.0,  0.0, 1.0 }, {  0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 }
+	{ {  0.00,   0.0,  0.0, 1.0 }, {  0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 } },
+	{ { -0.50,   0.0,  0.0, 1.0 }, { -0.17,   0.0,  0.0, 1.0 }, { 0.17,   0.0,  0.0, 1.0 }, { 0.50,   0.0,  0.0, 1.0 } },
+	{ { -0.25,   3.5,  0.0, 1.0 }, { -0.08,   3.5,  0.0, 1.0 }, { 0.08,   3.5,  0.0, 1.0 }, { 0.25,   3.5,  0.0, 1.0 } },
+	{ { -0.13,   7.5,  1.0, 1.0 }, { -0.04,   7.5,  1.0, 1.0 }, { 0.04,   7.5,  1.0, 1.0 }, { 0.13,   7.5,  1.0, 1.0 } },
+	{ {  0.00,  11.5,  1.5, 1.0 }, {  0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 } },
+	{ { -0.10,  14.0,  0.0, 1.0 }, { -0.03,  14.0,  0.0, 1.0 }, { 0.03,  14.0,  0.0, 1.0 }, { 0.10,  14.0,  0.0, 1.0 } },
+	{ { -0.63, 14.75,  0.0, 1.0 }, { -0.21, 14.75,  0.0, 1.0 }, { 0.21, 14.75,  0.0, 1.0 }, { 0.63, 14.75,  0.0, 1.0 } },
+	{ { -1.05, 16.75,  0.0, 1.0 }, { -0.35, 16.75,  0.0, 1.0 }, { 0.35, 16.75,  0.0, 1.0 }, { 1.05, 16.75,  0.0, 1.0 } },
+	{ { -0.78,  21.0,  0.0, 1.0 }, { -0.26,  21.0,  0.0, 1.0 }, { 0.26,  21.0,  0.0, 1.0 }, { 0.78,  21.0,  0.0, 1.0 } },
+	{ { -0.58,  24.5,  0.0, 1.0 }, { -0.19,  24.5,  0.0, 1.0 }, { 0.19,  24.5,  0.0, 1.0 }, { 0.58,  24.5,  0.0, 1.0 } },
+	{ { -0.30,  29.5,  0.0, 1.0 }, { -0.10,  29.5,  0.0, 1.0 }, { 0.10,  29.5,  0.0, 1.0 }, { 0.30,  29.5,  0.0, 1.0 } },
+	{ { -0.15,  29.0,  0.0, 1.0 }, { -0.05,  29.0,  0.0, 1.0 }, { 0.05,  29.0,  0.0, 1.0 }, { 0.15,  29.0,  0.0, 1.0 } },
+	{ {  0.00,  29.0,  0.0, 1.0 }, {  0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 } }
 };
 
 // { {  0.0,   0.0,  0.0, 1.0} },
@@ -54,8 +55,8 @@ GLfloat ctrlpoints_spatula[CTRLPOINTS_SPATULA_U][CTRLPOINTS_SPATULA_V][4] = {
 
 // GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
 // GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
-GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
-GLfloat ctrlpoints_pudding[CTRLPOINTS_PUDDING_U][CTRLPOINTS_PUDDING_V][4];
+GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4],
+	ctrlpoints_pudding[CTRLPOINTS_PUDDING_U][CTRLPOINTS_PUDDING_V][4];
 GLfloat knots_gourd_u[CTRLPOINTS_GOURD_U + 4], knots_gourd_v[CTRLPOINTS_GOURD_V + 4],
 	knots_pudding_u[CTRLPOINTS_PUDDING_U + 4], knots_pudding_v[CTRLPOINTS_PUDDING_V + 4];
 
@@ -316,6 +317,33 @@ void init(void) {
 	knots_pudding_v[10] = 1.0;
 	knots_pudding_v[11] = 1.0;
 	knots_pudding_v[12] = 1.0;
+
+	knots_spatula_u[0] =  0.0;
+	knots_spatula_u[1] =  0.0;
+	knots_spatula_u[2] =  0.0;
+	knots_spatula_u[3] =  0.0;
+	knots_spatula_u[4] =  0.1;
+	knots_spatula_u[5] =  0.2;
+	knots_spatula_u[6] =  0.3;
+	knots_spatula_u[7] =  0.4;
+	knots_spatula_u[8] =  0.5;
+	knots_spatula_u[9] =  0.6;
+	knots_spatula_u[10] =  0.7;
+	knots_spatula_u[11] =  0.8;
+	knots_spatula_u[12] =  0.9;
+	knots_spatula_u[13] =  1.0;
+	knots_spatula_u[14] =  1.0;
+	knots_spatula_u[15] =  1.0;
+	knots_spatula_u[16] =  1.0;
+
+	knots_spatula_v[0] = 0.0;
+	knots_spatula_v[1] = 0.0;
+	knots_spatula_v[2] = 0.25;
+	knots_spatula_v[3] = 0.5;
+	knots_spatula_v[4] = 0.5;
+	knots_spatula_v[5] = 0.75;
+	knots_spatula_v[6] = 1.0;
+	knots_spatula_v[7] = 1.0;
 }
 
 void draw_control_points_tray(void) {
@@ -413,6 +441,15 @@ void draw_pudding(void) {
 	glPopMatrix();
 }
 
+void draw_spatula(void) {
+	glPushMatrix();
+		glColor3ubv(spatula_color);
+		gluBeginSurface(nurbs);
+			gluNurbsSurface(nurbs, CTRLPOINTS_SPATULA_U + 4, knots_spatula_u, CTRLPOINTS_SPATULA_V + 4, knots_spatula_v, CTRLPOINTS_SPATULA_V * 4, 4, &ctrlpoints_spatula[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+		gluEndSurface(nurbs);
+	glPopMatrix();
+}
+
 void display(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -421,16 +458,19 @@ void display(void) {
 
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
-	glPushMatrix();
-		glScaled(6.0, 6.0, 6.0);
-		draw_tray();
-	glPopMatrix();
+	// glPushMatrix();
+	// 	glScaled(6.0, 6.0, 6.0);
+	// 	draw_tray();
+	// glPopMatrix();
+	//
+	// glPushMatrix();
+	// 	glTranslated(20.0, 0.0, 0.0);
+	// 	draw_gourd();
+	// glPopMatrix();
+	//
+	// draw_pudding();
 
-	glPushMatrix();
-		glTranslated(20.0, 0.0, 0.0);
-		draw_gourd();
-	glPopMatrix();
-	draw_pudding();
+	draw_spatula();
 
 	if (showPoints) draw_control_points();
 	glutSwapBuffers();
