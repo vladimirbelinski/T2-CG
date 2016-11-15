@@ -22,8 +22,12 @@ GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
 	{ {-1.5, 0.0,   1.4, 1.0}, {  -0.5,   0.0,   1.5, 1.0}, {  0.5,   0.0,   1.5, 1.0}, {1.5, 0.0,   1.4, 1.0} }
 };
 
+// GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
+// GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
-GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
+GLfloat ctrlpoints_pudding[CTRLPOINTS_PUDDING_U][CTRLPOINTS_PUDDING_V][4];
+GLfloat knots_gourd_u[CTRLPOINTS_GOURD_U + 4], knots_gourd_v[CTRLPOINTS_GOURD_V + 4],
+	knots_pudding_u[CTRLPOINTS_PUDDING_U + 4], knots_pudding_v[CTRLPOINTS_PUDDING_V + 4];
 
 void nurbsError(GLenum errorCode) {
 	const GLubyte *estring = NULL;
@@ -71,6 +75,43 @@ void init_gourd(void) {
 	}
 }
 
+void init_first_pudding_points(void) {
+	int i, j;
+	GLfloat pudding_initial_points[][4] = {
+		{   0.0,   5.0,  0.0,  1.0},
+		{   2.5,   5.0,  0.0,  1.0},
+		{   2.5,   0.0,  0.0,  1.0},
+		{   3.5,   0.0,  0.0,  1.0},
+		{   6.5,   0.0,  0.0,  1.0},
+		{   9.0,   0.0,  0.0,  1.0},
+		{   9.0,   8.5,  0.0,  1.0}
+	};
+	for (i = 0; i < CTRLPOINTS_PUDDING_U; i++) {
+		for (j = 0; j < 4; j++) {
+			ctrlpoints_pudding[i][0][j] = pudding_initial_points[i][j];
+			ctrlpoints_pudding[i][CTRLPOINTS_PUDDING_V - 1][j] = pudding_initial_points[i][j];
+		}
+	}
+}
+
+void init_pudding(void) {
+	int i, j, k = 0;
+	init_first_pudding_points();
+	for (i = 1; i < CTRLPOINTS_PUDDING_V - 1; i++) {
+		for (j = 0; j < CTRLPOINTS_PUDDING_U; j++) {
+			// cam_x = camx * COS_ONE_STEP + camz * SIN_ONE_STEP;
+			ctrlpoints_pudding[j][i][0] = ctrlpoints_pudding[j][i - 1][0] * COS_FOURTY_FIVE + ctrlpoints_pudding[j][i - 1][2] * SIN_FOURTY_FIVE;
+
+			ctrlpoints_pudding[j][i][1] = ctrlpoints_pudding[j][i - 1][1];
+
+			// cam_z = -camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
+			ctrlpoints_pudding[j][i][2] = -ctrlpoints_pudding[j][i - 1][0] * SIN_FOURTY_FIVE + ctrlpoints_pudding[j][i - 1][2] * COS_FOURTY_FIVE;
+
+			ctrlpoints_pudding[j][i][3] = ctrlpoints_pudding[j][i - 1][3];
+		}
+	}
+}
+
 void init(void) {
 	glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -112,9 +153,9 @@ void init(void) {
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHT2);
-	glEnable(GL_LIGHT3);
+  // glEnable(GL_LIGHT1);
+	// glEnable(GL_LIGHT2);
+	// glEnable(GL_LIGHT3);
 
 	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
 	// This means that glMaterial will control the polygon's specular and emission
@@ -218,6 +259,33 @@ void init(void) {
 	knots_gourd_v[10] = 1.0;
 	knots_gourd_v[11] = 1.0;
 	knots_gourd_v[12] = 1.0;
+
+	init_pudding();
+	knots_pudding_u[0] =  0.0;
+	knots_pudding_u[1] =  0.0;
+	knots_pudding_u[2] =  0.0;
+	knots_pudding_u[3] =  0.0;
+	knots_pudding_u[4] =  0.25;
+	knots_pudding_u[5] =  0.5;
+	knots_pudding_u[6] =  0.75;
+	knots_pudding_u[7] =  1.0;
+	knots_pudding_u[8] =  1.0;
+	knots_pudding_u[9] =  1.0;
+	knots_pudding_u[10] =  1.0;
+
+	knots_pudding_v[0] = 0.0;
+	knots_pudding_v[1] = 0.0;
+	knots_pudding_v[2] = 0.0;
+	knots_pudding_v[3] = 0.0;
+	knots_pudding_v[4] = 0.25;
+	knots_pudding_v[5] = 0.5;
+	knots_pudding_v[6] = 0.5;
+	knots_pudding_v[7] = 0.5;
+	knots_pudding_v[8] = 0.75;
+	knots_pudding_v[9] = 1.0;
+	knots_pudding_v[10] = 1.0;
+	knots_pudding_v[11] = 1.0;
+	knots_pudding_v[12] = 1.0;
 }
 
 void draw_control_points_tray(void) {
@@ -244,12 +312,25 @@ void draw_control_points_gourd(void) {
 	glPopMatrix();
 }
 
+void draw_control_points_pudding(void) {
+	int i, j;
+	glPushMatrix();
+		glColor4fv(pudding_color);
+		glBegin(GL_POINTS);
+			for (i = 0; i < CTRLPOINTS_PUDDING_U; i++)
+				for (j = 0; j < CTRLPOINTS_PUDDING_V; j++)
+					glVertex3f(ctrlpoints_pudding[i][j][0], ctrlpoints_pudding[i][j][1], ctrlpoints_pudding[i][j][2]);
+		glEnd();
+	glPopMatrix();
+}
+
 void draw_control_points(void) {
 	glPushMatrix();
 		glPointSize(5.0);
 		glDisable(GL_LIGHTING);
-		// draw_control_points_tray();
+		draw_control_points_tray();
 		draw_control_points_gourd();
+		draw_control_points_pudding();
 		glEnable(GL_LIGHTING);
 	glPopMatrix();
 }
@@ -293,6 +374,15 @@ void draw_gourd(void) {
 	glPopMatrix();
 }
 
+void draw_pudding(void) {
+	glPushMatrix();
+		glColor4fv(pudding_color);
+		gluBeginSurface(nurbs);
+			gluNurbsSurface(nurbs, CTRLPOINTS_PUDDING_U + 4, knots_pudding_u, CTRLPOINTS_PUDDING_V + 4, knots_pudding_v, CTRLPOINTS_PUDDING_V * 4, 4, &ctrlpoints_pudding[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+		gluEndSurface(nurbs);
+	glPopMatrix();
+}
+
 void display(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -301,8 +391,16 @@ void display(void) {
 
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
-	// draw_tray();
-	draw_gourd();
+	glPushMatrix();
+		glScaled(6.0, 6.0, 6.0);
+		draw_tray();
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslated(20.0, 0.0, 0.0);
+		draw_gourd();
+	glPopMatrix();
+	draw_pudding();
 
 	if (showPoints) draw_control_points();
 	glutSwapBuffers();

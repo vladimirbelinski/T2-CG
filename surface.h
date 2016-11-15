@@ -7,6 +7,8 @@
 #define CTRLPOINTS_TRAY_V 4
 #define CTRLPOINTS_GOURD_U 9
 #define CTRLPOINTS_GOURD_V 9
+#define CTRLPOINTS_PUDDING_U 7
+#define CTRLPOINTS_PUDDING_V 9
 
 const double PAN_STEP = 1.0;
 const double ONE_STEP =  M_PI / 180.0;
@@ -23,5 +25,6 @@ const double COS_NINETY = cos(NINETY);
 
 const GLubyte tray_color[] = {224, 223, 219};
 const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 0.5};
+const GLfloat pudding_color[] = {1.0, 1.0, 1.0, 0.5};
 
 void init_gourd(void);
