@@ -1,8 +1,9 @@
 #include <math.h>
 
+#define MAXTEXTURES 1
 #define DEF_CAM_X 0.0
-#define DEF_CAM_Y 0.0
-#define DEF_CAM_Z 50.0
+#define DEF_CAM_Y 50.0
+#define DEF_CAM_Z 60.0
 #define CTRLPOINTS_TRAY_U 6
 #define CTRLPOINTS_TRAY_V 4
 #define CTRLPOINTS_GOURD_U 9
@@ -26,8 +27,9 @@ const double SIN_NINETY = sin(NINETY);
 const double COS_NINETY = cos(NINETY);
 
 const GLubyte tray_color[] = {224, 223, 219};
-const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 0.5};
-const GLfloat pudding_color[] = {1.0, 1.0, 1.0, 0.5};
+const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 0.3};
+const GLfloat pudding_color[] = {1.0, 1.0, 1.0, 0.3};
 const GLubyte spatula_color[] = {224, 223, 219};
+const GLubyte counter_color[] = {255, 255, 255};
 
 void init_gourd(void);

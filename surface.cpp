@@ -1,9 +1,16 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
 #include "surface.h"
 using namespace std;
+
+unsigned int ih = 0, iw = 0;
+unsigned char * counter_texture = NULL;
+GLuint *textures = new GLuint[MAXTEXTURES];
+float ctex_ix = 0.0, ctex_iy = 0.0, ctex_fx = 1.0, ctex_fy = 1.0;
+unsigned char *  loadBMP_custom(const char *, unsigned int&, unsigned int&);
 
 bool showPoints = false;
 GLUnurbsObj *nurbs = NULL;
@@ -11,6 +18,11 @@ GLUnurbsObj *nurbs = NULL;
 double center_x = 0.0, center_y = 0.0, center_z = 0.0;
 // the position of the camera
 double cam_x = DEF_CAM_X, cam_y = DEF_CAM_Y, cam_z = DEF_CAM_Z;
+
+GLfloat counter_vertices[8][3] = {
+	{ 25.0f, -16.0f, -0.5f}, { 25.0f, 25.0f, -0.5f}, { 25.0f, 25.0f,  0.0f}, { 25.0f, -25.0f,  0.0f},
+	{-25.0f, -25.0f,  0.0f}, {-25.0f, 25.0f,  0.0f}, {-25.0f, 25.0f, -0.5f}, {-25.0f, -25.0f, -0.5f}
+};
 
 GLfloat knots_tray_u[CTRLPOINTS_TRAY_U + 4], knots_tray_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
@@ -89,7 +101,7 @@ void init_first_gourd_points(void) {
 }
 
 void init_gourd(void) {
-	int i, j, k = 0;
+	int i, j;
 	init_first_gourd_points();
 	for (i = 1; i < CTRLPOINTS_GOURD_V - 1; i++) {
 		for (j = 0; j < CTRLPOINTS_GOURD_U; j++) {
@@ -126,7 +138,7 @@ void init_first_pudding_points(void) {
 }
 
 void init_pudding(void) {
-	int i, j, k = 0;
+	int i, j;
 	init_first_pudding_points();
 	for (i = 1; i < CTRLPOINTS_PUDDING_V - 1; i++) {
 		for (j = 0; j < CTRLPOINTS_PUDDING_U; j++) {
@@ -144,6 +156,31 @@ void init_pudding(void) {
 }
 
 void init(void) {
+	// generation function of textures
+	glGenTextures(1, textures);
+	// enabling the use of tetxure
+	glEnable(GL_TEXTURE_2D);
+	// definig the storage form of pixels in the texture (1 means alignment per byte)
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	counter_texture = loadBMP_custom("marble.bmp", iw, ih);
+	// association function
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	// definition of the color mix
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	// void glTexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, iw, ih, 0, GL_RGB, GL_UNSIGNED_BYTE, counter_texture);
+	// GLint gluBuild2DMipmaps(GLenum target, GLint internalFormat, GLsizei width,	GLsizei height, GLenum format, GLenum type, const void *data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, iw, ih, GL_RGB, GL_UNSIGNED_BYTE, counter_texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+	// definition of the color interpolation scheme
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// treatment of points outside the texture space
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	delete counter_texture;
+
 	glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
@@ -199,6 +236,9 @@ void init(void) {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material_shininess);
 
 	glShadeModel(GL_SMOOTH); // GL_SMOOTH is the default
+
+	// definition of how perspective must be treated
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glEnable(GL_AUTO_NORMAL);
 	glEnable(GL_NORMALIZE);
@@ -338,10 +378,10 @@ void init(void) {
 
 	knots_spatula_v[0] = 0.0;
 	knots_spatula_v[1] = 0.0;
-	knots_spatula_v[2] = 0.25;
-	knots_spatula_v[3] = 0.5;
-	knots_spatula_v[4] = 0.5;
-	knots_spatula_v[5] = 0.75;
+	knots_spatula_v[2] = 0.0;
+	knots_spatula_v[3] = 0.0;
+	knots_spatula_v[4] = 1.0;
+	knots_spatula_v[5] = 1.0;
 	knots_spatula_v[6] = 1.0;
 	knots_spatula_v[7] = 1.0;
 }
@@ -450,27 +490,82 @@ void draw_spatula(void) {
 	glPopMatrix();
 }
 
+// in parallelepiped() the coordinates of the parallelepiped are mapped with the coordinates of the texture
+void parallelepiped(int a, int b, int c, int d) {
+	glTexCoord2f(ctex_fx, ctex_iy);
+	glVertex3fv(counter_vertices[a]);
+	glTexCoord2f(ctex_fx, ctex_fy);
+	glVertex3fv(counter_vertices[b]);
+	glTexCoord2f(ctex_ix, ctex_fy);
+	glVertex3fv(counter_vertices[c]);
+	glTexCoord2f(ctex_fx, ctex_iy);
+	glVertex3fv(counter_vertices[a]);
+	glTexCoord2f(ctex_ix, ctex_fy);
+	glVertex3fv(counter_vertices[c]);
+	glTexCoord2f(ctex_ix, ctex_iy);
+	glVertex3fv(counter_vertices[d]);
+}
+
+// the counter is made by triangles, that together build a parallelepiped. In draw_counter are calculated the normals for the ilumination and called the function parallelepiped() to map the coordinates necessary for the texture
+void draw_counter() {
+	glPushMatrix();
+	glColor3ubv(counter_color);
+	glBegin(GL_TRIANGLES);
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	parallelepiped(0, 3, 4, 7);
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	parallelepiped(1, 6, 5, 2);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	parallelepiped(0, 1, 2, 3);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	parallelepiped(3, 2, 5, 4);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	parallelepiped(4, 5, 6, 7);
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	parallelepiped(1, 0, 7, 6);
+	glEnd();
+	glPopMatrix();
+}
+
 void display(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
-	// glPushMatrix();
-	// 	glScaled(6.0, 6.0, 6.0);
-	// 	draw_tray();
-	// glPopMatrix();
-	//
-	// glPushMatrix();
-	// 	glTranslated(20.0, 0.0, 0.0);
-	// 	draw_gourd();
-	// glPopMatrix();
-	//
-	// draw_pudding();
+	glPushMatrix();
+		glScaled(6.0, 6.0, 6.0);
+		draw_tray();
+	glPopMatrix();
 
-	draw_spatula();
+	glPushMatrix();
+		glTranslated(20.0, -1.2, 0.0);
+		draw_gourd();
+	glPopMatrix();
+
+	draw_pudding();
+
+	glPushMatrix();
+		glScalef(0.6f, 0.6f, 0.6f);
+		glTranslatef(10.0f, -1.0f, 11.0f);
+		glRotated(-90, 1.0, 0.0, 0.0);
+		glRotated(90, 0.0, 0.0, 1.0);
+		draw_spatula();
+	glPopMatrix();
+
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glPushMatrix();
+	glTranslatef(0.0f, -1.2f, 0.0f);
+	glRotated(-90, 0.0, 1.0, 0.0);
+	glRotated(-90, 1.0, 0.0, 0.0);
+	draw_counter();
+	glPopMatrix();
+
+	// Define GL texture para NULL (standard cleanup)
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (showPoints) draw_control_points();
 	glutSwapBuffers();
@@ -483,7 +578,7 @@ void reshape(int w, int h) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0 /* angle of view */, (double) w / h /* aspect ratio */ , 0.1, 100.0);
+	gluPerspective(45.0 /* angle of view */, (double) w / h /* aspect ratio */ , 0.1, 150.0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

@@ -1,10 +1,13 @@
-all: surface.o
+all: bmp surface.o
 
 run: all
 	./surface.o
 
+bmp: bmp.cpp
+	g++ -c -g bmp.cpp -o bmp.o
+
 surface.o: surface.h surface.cpp
-	g++ surface.cpp -o surface.o -lGL -lGLU -lglut -lm
+	g++ bmp.o -Wall -O2 -lm -g surface.cpp -lGL -lGLU -lglut -o surface.o
 
 clean:
-	rm surface.o
+	rm bmp.o surface.o
