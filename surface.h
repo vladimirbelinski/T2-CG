@@ -1,3 +1,11 @@
+/* Arquivo: surface.h
+   Autores: Gabriel Batista Galli e Vladimir Belinski
+   Descrição: o presente arquivo faz parte da resolução do Trabalho II do CCR Computação Gráfica, 2016-2, do curso de
+              Ciência da Computação da Universidade Federal da Fronteira Sul - UFFS, o qual consiste na renderização
+              de uma imagem utilizando-se NURBS.
+              --> surface.h é o arquivo header de surface.cpp
+*/
+
 #include <math.h>
 
 #define MAXTEXTURES 1

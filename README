@@ -1,0 +1,17 @@
+/* Arquivo: README
+   Autores: Gabriel Batista Galli e Vladimir Belinski
+   Descrição: o presente arquivo faz parte da resolução do Trabalho II do CCR Computação Gráfica, 2016-2, do curso de
+              Ciência da Computação da Universidade Federal da Fronteira Sul - UFFS, o qual consiste na renderização
+              de uma imagem utilizando-se NURBS.
+              --> README contém instruções relevantes à compilação, execução e uso do programa
+*/
+
+Compilação e execução: em ambiente Linux, estando na pasta onde os arquivos que compõem a resolução do trabalho se encontram, executar o comando 'make run'
+
+Utilização: para a movimentação da câmera pressione:
+            -> as teclas 'w' e 's' para movimentação ao redor da cena no eixo y
+            -> as teclas 'a' e 'd' para movimentação ao redor da cena no eixo x
+            -> as teclas 'W' e 'S' para movimentação da câmera livremente no eixo y
+            -> as teclas 'A' e 'D' para movimentação da câmera livremente no eixo x
+            -> a tecla '-' para menos zoom na cena
+            -> a tecla '+' para mais zoom na cena

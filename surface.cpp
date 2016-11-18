@@ -1,3 +1,13 @@
+/* Arquivo: surface.cpp
+   Autores: Gabriel Batista Galli e Vladimir Belinski
+   Descrição: o presente arquivo faz parte da resolução do Trabalho II do CCR Computação Gráfica, 2016-2, do curso de
+              Ciência da Computação da Universidade Federal da Fronteira Sul - UFFS, o qual consiste na renderização
+              de uma imagem utilizando-se NURBS.
+              --> surface.cpp é o principal arquivo do trabalho. Nele são realizadas as configurações de visibilidade,
+              iluminação, posicionamento de câmera, aplicação de textura, definição e chamada das funções de desenho,
+							gerenciamento de teclado, entre outros.
+*/
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
