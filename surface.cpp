@@ -61,20 +61,6 @@ GLfloat ctrlpoints_spatula[CTRLPOINTS_SPATULA_U][CTRLPOINTS_SPATULA_V][4] = {
 	{ {  0.00,  29.0,  0.0, 1.0 }, {  0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 } }
 };
 
-// { {  0.0,   0.0,  0.0, 1.0} },
-// { {  2.0,   0.0,  0.0, 1.0} },
-// { {  1.0,   3.5,  0.0, 1.0} },
-// { {  0.5,   7.5,  1.0, 1.0} },
-// { {  0.0,  11.5,  1.5, 1.0} },
-// { {  0.4,  14.0,  0.0, 1.0} },
-// { {  2.5, 14.75,  0.0, 1.0} },
-// { {  4.2, 16.75,  0.0, 1.0} },
-// { {  3.1,  21.0,  0.0, 1.0} },
-// { {  2.3,  24.5,  0.0, 1.0} },
-// { {  1.2,  29.5,  0.0, 1.0} },
-// { {  0.6,  29.0,  0.0, 1.0} },
-// { {  0.0,  29.0,  0.0, 1.0} }
-
 // GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
 // GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4],
@@ -544,6 +530,7 @@ void display(void) {
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
 	glPushMatrix();
