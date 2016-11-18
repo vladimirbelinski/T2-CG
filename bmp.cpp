@@ -1,5 +1,13 @@
-#include <stdio.h>
+/* Arquivo: bmp.cpp
+   Autores: Gabriel Batista Galli e Vladimir Belinski
+   Descrição: o presente arquivo faz parte da resolução do Trabalho II do CCR Computação Gráfica, 2016-2, do curso de
+              Ciência da Computação da Universidade Federal da Fronteira Sul - UFFS, o qual consiste na renderização
+              de uma imagem utilizando-se NURBS.
+              --> bmp.cpp é utilizado para a leitura da imagem que será utilizada na textura. Cabe destacar que o código
+							consiste naquele fornecido pelo professor acerca do conteúdo de texturas.
+*/
 
+#include <stdio.h>
 
 void swapRB(unsigned char & b, unsigned char & r) {
 	unsigned char x;

@@ -22,7 +22,6 @@ GLuint *textures = new GLuint[MAXTEXTURES];
 float ctex_ix = 0.0, ctex_iy = 0.0, ctex_fx = 1.0, ctex_fy = 1.0;
 unsigned char *  loadBMP_custom(const char *, unsigned int&, unsigned int&);
 
-bool showPoints = false;
 GLUnurbsObj *nurbs = NULL;
 // the position the camera points to
 double center_x = 0.0, center_y = 0.0, center_z = 0.0;
@@ -30,8 +29,8 @@ double center_x = 0.0, center_y = 0.0, center_z = 0.0;
 double cam_x = DEF_CAM_X, cam_y = DEF_CAM_Y, cam_z = DEF_CAM_Z;
 
 GLfloat counter_vertices[8][3] = {
-	{ 25.0f, -16.0f, -0.5f}, { 25.0f, 25.0f, -0.5f}, { 25.0f, 25.0f,  0.0f}, { 25.0f, -25.0f,  0.0f},
-	{-25.0f, -25.0f,  0.0f}, {-25.0f, 25.0f,  0.0f}, {-25.0f, 25.0f, -0.5f}, {-25.0f, -25.0f, -0.5f}
+	{ 50.0f, -16.0f, -0.5f}, { 50.0f, 50.0f, -0.5f}, { 50.0f, 50.0f,  0.0f}, { 50.0f, -50.0f,  0.0f},
+	{-50.0f, -50.0f,  0.0f}, {-50.0f, 50.0f,  0.0f}, {-50.0f, 50.0f, -0.5f}, {-50.0f, -50.0f, -0.5f}
 };
 
 GLfloat knots_tray_u[CTRLPOINTS_TRAY_U + 4], knots_tray_v[CTRLPOINTS_TRAY_V + 4];
@@ -117,8 +116,8 @@ void init_gourd(void) {
 void init_first_pudding_points(void) {
 	int i, j;
 	GLfloat pudding_initial_points[][4] = {
-		{   0.0,   5.0,  0.0,  1.0},
-		{   2.5,   5.0,  0.0,  1.0},
+		{   0.0,   7.0,  0.0,  1.0},
+		{   2.5,   7.0,  0.0,  1.0},
 		{   2.5,   0.0,  0.0,  1.0},
 		{   3.5,   0.0,  0.0,  1.0},
 		{   6.5,   0.0,  0.0,  1.0},
@@ -189,37 +188,19 @@ void init(void) {
   // location of the light in eye coordinates, and attenuation is enabled.
   const GLfloat light0_position[] = {25.0, 25.0, 25.0, 1.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-  const GLfloat light1_position[] = {-25.0, 25.0, 25.0, 1.0};
-  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	const GLfloat light2_position[] = {25.0, 25.0, -25.0, 1.0};
-  glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
-	const GLfloat light3_position[] = {-25.0, 25.0, -25.0, 1.0};
-  glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
 
   const GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient);
 
   const GLfloat light_color[] = {1.0, 1.0, 1.0, 1.0};
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_color);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, light_color);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, light_color);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, light_color);
-  glLightfv(GL_LIGHT2, GL_SPECULAR, light_color);
-  glLightfv(GL_LIGHT3, GL_DIFFUSE, light_color);
-  glLightfv(GL_LIGHT3, GL_SPECULAR, light_color);
 
   const GLfloat light_ambient_global[] = {0.2, 0.2, 0.2, 1.0}; // default is 0.2, 0.2, 0.2, 1.0
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  // glEnable(GL_LIGHT1);
-	// glEnable(GL_LIGHT2);
-	// glEnable(GL_LIGHT3);
 
 	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
 	// This means that glMaterial will control the polygon's specular and emission
@@ -382,53 +363,6 @@ void init(void) {
 	knots_spatula_v[7] = 1.0;
 }
 
-void draw_control_points_tray(void) {
-	int i, j;
-	glPushMatrix();
-		glColor3ubv(tray_color);
-		glBegin(GL_POINTS);
-			for (i = 0; i < CTRLPOINTS_TRAY_U; i++)
-				for (j = 0; j < CTRLPOINTS_TRAY_V; j++)
-					glVertex3f(ctrlpoints_tray[i][j][0], ctrlpoints_tray[i][j][1], ctrlpoints_tray[i][j][2]);
-		glEnd();
-	glPopMatrix();
-}
-
-void draw_control_points_gourd(void) {
-	int i, j;
-	glPushMatrix();
-		glColor4fv(gourd_color);
-		glBegin(GL_POINTS);
-			for (i = 0; i < CTRLPOINTS_GOURD_U; i++)
-				for (j = 0; j < CTRLPOINTS_GOURD_V; j++)
-					glVertex3f(ctrlpoints_gourd[i][j][0], ctrlpoints_gourd[i][j][1], ctrlpoints_gourd[i][j][2]);
-		glEnd();
-	glPopMatrix();
-}
-
-void draw_control_points_pudding(void) {
-	int i, j;
-	glPushMatrix();
-		glColor4fv(pudding_color);
-		glBegin(GL_POINTS);
-			for (i = 0; i < CTRLPOINTS_PUDDING_U; i++)
-				for (j = 0; j < CTRLPOINTS_PUDDING_V; j++)
-					glVertex3f(ctrlpoints_pudding[i][j][0], ctrlpoints_pudding[i][j][1], ctrlpoints_pudding[i][j][2]);
-		glEnd();
-	glPopMatrix();
-}
-
-void draw_control_points(void) {
-	glPushMatrix();
-		glPointSize(5.0);
-		glDisable(GL_LIGHTING);
-		draw_control_points_tray();
-		draw_control_points_gourd();
-		draw_control_points_pudding();
-		glEnable(GL_LIGHTING);
-	glPopMatrix();
-}
-
 void draw_tray(void) {
 	glPushMatrix();
 		glColor3ubv(tray_color);
@@ -530,41 +464,44 @@ void display(void) {
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
-
-	glPushMatrix();
-		glScaled(6.0, 6.0, 6.0);
-		draw_tray();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslated(20.0, -1.2, 0.0);
-		draw_gourd();
-	glPopMatrix();
-
-	draw_pudding();
-
-	glPushMatrix();
-		glScalef(0.6f, 0.6f, 0.6f);
-		glTranslatef(10.0f, -1.0f, 11.0f);
-		glRotated(-90, 1.0, 0.0, 0.0);
-		glRotated(90, 0.0, 0.0, 1.0);
-		draw_spatula();
-	glPopMatrix();
 
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glPushMatrix();
-	glTranslatef(0.0f, -1.2f, 0.0f);
-	glRotated(-90, 0.0, 1.0, 0.0);
-	glRotated(-90, 1.0, 0.0, 0.0);
-	draw_counter();
+		glTranslatef(0.0f, -1.4f, -20.0f);
+		glRotated(-90, 0.0, 1.0, 0.0);
+		glRotated(-90, 1.0, 0.0, 0.0);
+		draw_counter();
 	glPopMatrix();
 
 	// Define GL texture para NULL (standard cleanup)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	if (showPoints) draw_control_points();
+	glPushMatrix();
+		glScalef(7.0f, 7.0f, 7.0f);
+		draw_tray();
+	glPopMatrix();
+
+	glPushMatrix();
+		glScalef(0.8f, 0.8f, 0.8f);
+		glTranslatef(15.0f, -1.2f, 15.0f);
+		glRotated(-90, 1.0, 0.0, 0.0);
+		glRotated(90, 0.0, 0.0, 1.0);
+		draw_spatula();
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(11.0f, -0.8f, -2.5f);
+		glScalef(2.0f, 2.0f, 2.0f);
+		draw_gourd();
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(-3.5f, 0.0f, 0.0f);
+		glScalef(1.3f, 1.0f, 1.3f);
+		draw_pudding();
+	glPopMatrix();
+
 	glutSwapBuffers();
 }
 
@@ -648,9 +585,6 @@ void keyboard(unsigned char key, int x, int y) {
     case 'C':
       center_x = center_y = center_z = 0.0;
       break;
-		case 'p':
-		case 'P':
-			showPoints = !showPoints;
   }
 }
 
@@ -664,7 +598,6 @@ int main(int argc, char** argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutIdleFunc(idle);
-	// glutMouseFunc(mouse);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 	return 0;

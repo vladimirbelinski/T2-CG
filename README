@@ -13,5 +13,7 @@ Utilização: para a movimentação da câmera pressione:
             -> as teclas 'a' e 'd' para movimentação ao redor da cena no eixo x
             -> as teclas 'W' e 'S' para movimentação da câmera livremente no eixo y
             -> as teclas 'A' e 'D' para movimentação da câmera livremente no eixo x
+            -> a tecla 'c' para retornar a câmera à posição original
+            -> a tecla 'C' para apontar a câmera para a posição 0.0 em x, y e z
             -> a tecla '-' para menos zoom na cena
-            -> a tecla '+' para mais zoom na cena
+            -> a tecla '=' para mais zoom na cena
