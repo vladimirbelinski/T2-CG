@@ -11,3 +11,4 @@ Compilação e execução: em ambiente Linux, estando na pasta onde os arquivos 
 Utilização: para a movimentação da câmera, pressione:
             --> as teclas de '0' a '7' para alternar entre diferentes posições de visualização
             --> as teclas 'Y' e 'y' para alternar entre as alturas padrão e 0.0, respectivamente
+            --> 'Esc' para fechar a janela de visualização 

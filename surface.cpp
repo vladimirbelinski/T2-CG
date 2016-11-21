@@ -470,6 +470,7 @@ void display(void) {
 
 	gluLookAt(cam_x, cam_y, cam_z, center_x, center_y, center_z, 0.0, 1.0, 0.0);
 
+	// binding the texture for the counter, positioning and drawing it
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glPushMatrix();
 		glTranslatef(0.0f, -1.4f, -20.0f);
@@ -478,28 +479,32 @@ void display(void) {
 		draw_counter();
 	glPopMatrix();
 
-	// Define GL texture para NULL (standard cleanup)
+	// defining GL texture to NULL (standard cleanup)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// positioning and drawing the tray
 	glPushMatrix();
 		glScalef(7.0f, 7.0f, 7.0f);
 		draw_tray();
 	glPopMatrix();
 
+	// positioning and drawing the spatula
 	glPushMatrix();
 		glScalef(0.8f, 0.8f, 0.8f);
-		glTranslatef(15.0f, -1.2f, 15.0f);
+		glTranslatef(15.0f, -1.2f, 17.0f);
 		glRotated(-90, 1.0, 0.0, 0.0);
 		glRotated(90, 0.0, 0.0, 1.0);
 		draw_spatula();
 	glPopMatrix();
 
+	// positioning and drawing the gourd
 	glPushMatrix();
 		glTranslatef(11.0f, -0.8f, -2.5f);
 		glScalef(2.0f, 2.0f, 2.0f);
 		draw_gourd();
 	glPopMatrix();
 
+	// positioning and drawing the pudding pot
 	glPushMatrix();
 		glTranslatef(-3.5f, 0.0f, 0.0f);
 		glScalef(1.3f, 1.0f, 1.3f);
