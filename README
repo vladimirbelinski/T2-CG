@@ -8,12 +8,6 @@
 
 Compilação e execução: em ambiente Linux, estando na pasta onde os arquivos que compõem a resolução do trabalho se encontram, executar o comando 'make run'
 
-Utilização: para a movimentação da câmera pressione:
-            -> as teclas 'w' e 's' para movimentação ao redor da cena no eixo y
-            -> as teclas 'a' e 'd' para movimentação ao redor da cena no eixo x
-            -> as teclas 'W' e 'S' para movimentação da câmera livremente no eixo y
-            -> as teclas 'A' e 'D' para movimentação da câmera livremente no eixo x
-            -> a tecla 'c' para retornar a câmera à posição original
-            -> a tecla 'C' para apontar a câmera para a posição 0.0 em x, y e z
-            -> a tecla '-' para menos zoom na cena
-            -> a tecla '=' para mais zoom na cena
+Utilização: para a movimentação da câmera, pressione:
+            --> as teclas de '0' a '7' para alternar entre diferentes posições de visualização
+            --> as teclas 'Y' e 'y' para alternar entre as alturas padrão e 0.0, respectivamente

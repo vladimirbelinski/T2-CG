@@ -14,13 +14,12 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include "surface.h"
-using namespace std;
 
 unsigned int ih = 0, iw = 0;
 unsigned char * counter_texture = NULL;
 GLuint *textures = new GLuint[MAXTEXTURES];
 float ctex_ix = 0.0, ctex_iy = 0.0, ctex_fx = 1.0, ctex_fy = 1.0;
-unsigned char *  loadBMP_custom(const char *, unsigned int&, unsigned int&);
+unsigned char* loadBMP_custom(const char*, unsigned int&, unsigned int&);
 
 GLUnurbsObj *nurbs = NULL;
 // the position the camera points to
@@ -45,23 +44,21 @@ GLfloat ctrlpoints_tray[CTRLPOINTS_TRAY_U][CTRLPOINTS_TRAY_V][4] = {
 
 GLfloat knots_spatula_u[CTRLPOINTS_SPATULA_U + 4], knots_spatula_v[CTRLPOINTS_SPATULA_V + 4];
 GLfloat ctrlpoints_spatula[CTRLPOINTS_SPATULA_U][CTRLPOINTS_SPATULA_V][4] = {
-	{ {  0.00,   0.0,  0.0, 1.0 }, {  0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 }, { 0.00,   0.0,  0.0, 1.0 } },
-	{ { -0.50,   0.0,  0.0, 1.0 }, { -0.17,   0.0,  0.0, 1.0 }, { 0.17,   0.0,  0.0, 1.0 }, { 0.50,   0.0,  0.0, 1.0 } },
-	{ { -0.25,   3.5,  0.0, 1.0 }, { -0.08,   3.5,  0.0, 1.0 }, { 0.08,   3.5,  0.0, 1.0 }, { 0.25,   3.5,  0.0, 1.0 } },
-	{ { -0.13,   7.5,  1.0, 1.0 }, { -0.04,   7.5,  1.0, 1.0 }, { 0.04,   7.5,  1.0, 1.0 }, { 0.13,   7.5,  1.0, 1.0 } },
-	{ {  0.00,  11.5,  1.5, 1.0 }, {  0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 }, { 0.00,  11.5,  1.5, 1.0 } },
-	{ { -0.10,  14.0,  0.0, 1.0 }, { -0.03,  14.0,  0.0, 1.0 }, { 0.03,  14.0,  0.0, 1.0 }, { 0.10,  14.0,  0.0, 1.0 } },
-	{ { -0.63, 14.75,  0.0, 1.0 }, { -0.21, 14.75,  0.0, 1.0 }, { 0.21, 14.75,  0.0, 1.0 }, { 0.63, 14.75,  0.0, 1.0 } },
-	{ { -1.05, 16.75,  0.0, 1.0 }, { -0.35, 16.75,  0.0, 1.0 }, { 0.35, 16.75,  0.0, 1.0 }, { 1.05, 16.75,  0.0, 1.0 } },
-	{ { -0.78,  21.0,  0.0, 1.0 }, { -0.26,  21.0,  0.0, 1.0 }, { 0.26,  21.0,  0.0, 1.0 }, { 0.78,  21.0,  0.0, 1.0 } },
-	{ { -0.58,  24.5,  0.0, 1.0 }, { -0.19,  24.5,  0.0, 1.0 }, { 0.19,  24.5,  0.0, 1.0 }, { 0.58,  24.5,  0.0, 1.0 } },
-	{ { -0.30,  29.5,  0.0, 1.0 }, { -0.10,  29.5,  0.0, 1.0 }, { 0.10,  29.5,  0.0, 1.0 }, { 0.30,  29.5,  0.0, 1.0 } },
-	{ { -0.15,  29.0,  0.0, 1.0 }, { -0.05,  29.0,  0.0, 1.0 }, { 0.05,  29.0,  0.0, 1.0 }, { 0.15,  29.0,  0.0, 1.0 } },
-	{ {  0.00,  29.0,  0.0, 1.0 }, {  0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 }, { 0.00,  29.0,  0.0, 1.0 } }
+	{ {  -0.50, 29.95,  0.0, 1.0 }, { -0.15, 29.95,  0.0, 1.0 }, { 0.15, 29.95,  0.0, 1.0 }, {  0.50, 29.95,  0.0, 1.0 } },
+	{ {  -1.00, 29.90,  0.0, 1.0 }, { -0.20, 29.90,  0.0, 1.0 }, { 0.20, 29.90,  0.0, 1.0 }, {  1.00, 29.90,  0.0, 1.0 } },
+	{ {  -1.50, 29.50,  0.0, 1.0 }, { -0.25, 29.50,  0.0, 1.0 }, { 0.25, 29.50,  0.0, 1.0 }, {  1.50, 29.50,  0.0, 1.0 } },
+	{ {  -2.18, 24.50,  0.0, 1.0 }, { -0.29, 24.50,  0.0, 1.0 }, { 0.29, 24.50,  0.0, 1.0 }, {  2.18, 24.50,  0.0, 1.0 } },
+	{ {  -2.78, 21.00,  0.0, 1.0 }, { -0.40, 21.00,  0.0, 1.0 }, { 0.40, 21.00,  0.0, 1.0 }, {  2.78, 21.00,  0.0, 1.0 } },
+	{ {  -3.15, 16.75,  0.0, 1.0 }, { -0.65, 16.75,  0.0, 1.0 }, { 0.65, 16.75,  0.0, 1.0 }, {  3.15, 16.75,  0.0, 1.0 } },
+	{ {  -2.83, 14.75,  0.0, 1.0 }, { -0.51, 14.75,  0.0, 1.0 }, { 0.51, 14.75,  0.0, 1.0 }, {  2.83, 14.75,  0.0, 1.0 } },
+	{ {  -0.40,  14.0,  0.0, 1.0 }, { -0.33,  14.0,  0.0, 1.0 }, { 0.33,  14.0,  0.0, 1.0 }, {  0.40,  14.0,  0.0, 1.0 } },
+	{ {  -0.30,  11.5,  1.5, 1.0 }, { -0.30,  11.5,  1.5, 1.0 }, { 0.30,  11.5,  1.5, 1.0 }, {  0.30,  11.5,  1.5, 1.0 } },
+	{ {  -0.43,   7.5,  1.0, 1.0 }, { -0.34,   7.5,  1.0, 1.0 }, { 0.34,   7.5,  1.0, 1.0 }, {  0.43,   7.5,  1.0, 1.0 } },
+	{ {  -0.60,   3.5,  0.0, 1.0 }, { -0.38,   3.5,  0.0, 1.0 }, { 0.38,   3.5,  0.0, 1.0 }, {  0.60,   3.5,  0.0, 1.0 } },
+	{ {  -0.90,   0.0,  0.0, 1.0 }, { -0.47,   0.0,  0.0, 1.0 }, { 0.47,   0.0,  0.0, 1.0 }, {  0.90,   0.0,  0.0, 1.0 } },
+	{ {  -0.15,   0.0,  0.0, 1.0 }, { -0.30,   0.0,  0.0, 1.0 }, { 0.30,   0.0,  0.0, 1.0 }, {  0.15,   0.0,  0.0, 1.0 } }
 };
 
-// GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4];
-// GLfloat knots_gourd_u[CTRLPOINTS_TRAY_U + 4], knots_gourd_v[CTRLPOINTS_TRAY_V + 4];
 GLfloat ctrlpoints_gourd[CTRLPOINTS_GOURD_U][CTRLPOINTS_GOURD_V][4],
 	ctrlpoints_pudding[CTRLPOINTS_PUDDING_U][CTRLPOINTS_PUDDING_V][4];
 GLfloat knots_gourd_u[CTRLPOINTS_GOURD_U + 4], knots_gourd_v[CTRLPOINTS_GOURD_V + 4],
@@ -74,6 +71,8 @@ void nurbsError(GLenum errorCode) {
 	exit(-1);
 }
 
+// puts the points that represent the silhouette of the gourd
+// in the first and last columns of its control points matrix
 void init_first_gourd_points(void) {
 	int i, j;
 	GLfloat gourd_initial_points[][4] = {
@@ -95,6 +94,8 @@ void init_first_gourd_points(void) {
 	}
 }
 
+// performs a 360-degree rotation of the initial points
+// of the gourd so we end up with a whole surface
 void init_gourd(void) {
 	int i, j;
 	init_first_gourd_points();
@@ -113,6 +114,7 @@ void init_gourd(void) {
 	}
 }
 
+// same as 'init_first_gourd_points', but for the pudding
 void init_first_pudding_points(void) {
 	int i, j;
 	GLfloat pudding_initial_points[][4] = {
@@ -132,6 +134,7 @@ void init_first_pudding_points(void) {
 	}
 }
 
+// same as 'init_gourd', but for the pudding
 void init_pudding(void) {
 	int i, j;
 	init_first_pudding_points();
@@ -150,6 +153,7 @@ void init_pudding(void) {
 	}
 }
 
+// all OpenGL-related initialization
 void init(void) {
 	// generation function of textures
 	glGenTextures(1, textures);
@@ -186,7 +190,7 @@ void init(void) {
   // take the light's direction, but not its actual position, into account, and attenuation is
   // disabled. Otherwise, diffuse and specular lighting calculations are based on the actual
   // location of the light in eye coordinates, and attenuation is enabled.
-  const GLfloat light0_position[] = {25.0, 25.0, 25.0, 1.0};
+  const GLfloat light0_position[] = {0.0, 50.0, 25.0, 1.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
   const GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
@@ -205,8 +209,8 @@ void init(void) {
 	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
 	// This means that glMaterial will control the polygon's specular and emission
 	// colours and the ambient and diffuse will both be set using glColor."
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	const GLfloat material_specular[] = {1.0, 1.0, 1.0, 1.0};
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_specular);
 	const GLfloat material_shininess[] = {128.0}; // 0 to 128. The higher, the "thinner" the "little white glow"
@@ -439,21 +443,21 @@ void parallelepiped(int a, int b, int c, int d) {
 // the counter is made by triangles, that together build a parallelepiped. In draw_counter are calculated the normals for the ilumination and called the function parallelepiped() to map the coordinates necessary for the texture
 void draw_counter() {
 	glPushMatrix();
-	glColor3ubv(counter_color);
-	glBegin(GL_TRIANGLES);
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	parallelepiped(0, 3, 4, 7);
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	parallelepiped(1, 6, 5, 2);
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	parallelepiped(0, 1, 2, 3);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	parallelepiped(3, 2, 5, 4);
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	parallelepiped(4, 5, 6, 7);
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	parallelepiped(1, 0, 7, 6);
-	glEnd();
+		glColor3ubv(counter_color);
+		glBegin(GL_TRIANGLES);
+			glNormal3f(0.0f, -1.0f, 0.0f);
+			parallelepiped(0, 3, 4, 7);
+			glNormal3f(0.0f, 1.0f, 0.0f);
+			parallelepiped(1, 6, 5, 2);
+			glNormal3f(1.0f, 0.0f, 0.0f);
+			parallelepiped(0, 1, 2, 3);
+			glNormal3f(0.0f, 0.0f, 1.0f);
+			parallelepiped(3, 2, 5, 4);
+			glNormal3f(-1.0f, 0.0f, 0.0f);
+			parallelepiped(4, 5, 6, 7);
+			glNormal3f(0.0f, 0.0f, -1.0f);
+			parallelepiped(1, 0, 7, 6);
+		glEnd();
 	glPopMatrix();
 }
 
@@ -523,68 +527,47 @@ void idle(void) {
 }
 
 void keyboard(unsigned char key, int x, int y) {
-  double camx = cam_x;
-  double camy = cam_y;
-  double camz = cam_z;
   switch (key) {
 		case 27: // ESC
 			exit(0);
-    case 'w':
-      cam_y = camy * COS_ONE_STEP + camz * SIN_ONE_STEP;
-      cam_z = -camy * SIN_ONE_STEP + camz * COS_ONE_STEP;
-      break;
-    case 'a':
-      cam_x = camx * COS_ONE_STEP - camz * SIN_ONE_STEP;
-      cam_z = camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
-      break;
-    case 's':
-      cam_y = camy * COS_ONE_STEP - camz * SIN_ONE_STEP;
-      cam_z = camy * SIN_ONE_STEP + camz * COS_ONE_STEP;
-      break;
-    case 'd':
-      cam_x = camx * COS_ONE_STEP + camz * SIN_ONE_STEP;
-      cam_z = -camx * SIN_ONE_STEP + camz * COS_ONE_STEP;
-      break;
-    case 'e':
-      cam_x = COS_ONE_STEP * camx + SIN_ONE_STEP * camy;
-      cam_y = -SIN_ONE_STEP * camx + COS_ONE_STEP * camy;
-      break;
-    case 'q':
-      cam_x = COS_ONE_STEP * camx - SIN_ONE_STEP * camy;
-      cam_y = SIN_ONE_STEP * camx + COS_ONE_STEP * camy;
-      break;
-    case 'W':
-      cam_y += PAN_STEP;
-      center_y += PAN_STEP;
-      break;
-    case 'A':
-      cam_x -= PAN_STEP;
-      center_x -= PAN_STEP;
-      break;
-    case 'S':
-      cam_y -= PAN_STEP;
-      center_y -= PAN_STEP;
-      break;
-    case 'D':
-      cam_x += PAN_STEP;
-      center_x += PAN_STEP;
-      break;
-    case '=':
-      if (cam_z > 0) cam_z -= PAN_STEP;
-      else if (cam_z < 0) cam_z += PAN_STEP;
-      break;
-    case '-':
-      if (cam_z >= 0) cam_z += PAN_STEP;
-      else if (cam_z < 0) cam_z -= PAN_STEP;
-      break;
-    case 'c':
-      cam_x = DEF_CAM_X;
-      cam_y = DEF_CAM_Y;
-      cam_z = DEF_CAM_Z;
-      break;
-    case 'C':
-      center_x = center_y = center_z = 0.0;
-      break;
+		case 'y':
+			cam_y = 0.0;
+			break;
+		case 'Y':
+			cam_y = DEF_CAM_Y;
+			break;
+		case '0':
+			cam_x = DEF_CAM_X;
+			cam_z = DEF_CAM_Z;
+			break;
+    case '1':
+			cam_x = 30.0;
+			cam_z = DEF_CAM_Z;
+			break;
+    case '2':
+			cam_x = 50.0;
+			cam_z = 0.0;
+			break;
+		case '3':
+			cam_x = 30.0;
+			cam_z = -DEF_CAM_Z;
+			break;
+		case '4':
+			cam_x = DEF_CAM_X;
+			cam_z = -DEF_CAM_Z;
+			break;
+    case '5':
+			cam_x = -30.0;
+			cam_z = -DEF_CAM_Z;
+			break;
+    case '6':
+			cam_x = -50.0;
+			cam_z = 0.0;
+			break;
+		case '7':
+			cam_x = -30.0;
+			cam_z = DEF_CAM_Z;
+			break;
   }
 }
 

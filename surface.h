@@ -34,10 +34,10 @@ const double NINETY = ONE_STEP * 90.0;
 const double SIN_NINETY = sin(NINETY);
 const double COS_NINETY = cos(NINETY);
 
-const GLubyte tray_color[] = {224, 223, 219};
+const GLubyte tray_color[] = {155, 155, 155};
 const GLfloat gourd_color[] = {1.0, 1.0, 1.0, 0.4};
 const GLfloat pudding_color[] = {1.0, 1.0, 1.0, 0.4};
-const GLubyte spatula_color[] = {224, 223, 219};
+const GLubyte spatula_color[] = {155, 155, 155};
 const GLubyte counter_color[] = {255, 255, 255};
 
 void init_gourd(void);
