@@ -190,21 +190,30 @@ void init(void) {
   // take the light's direction, but not its actual position, into account, and attenuation is
   // disabled. Otherwise, diffuse and specular lighting calculations are based on the actual
   // location of the light in eye coordinates, and attenuation is enabled.
-  const GLfloat light0_position[] = {0.0, 50.0, 25.0, 1.0};
+	const GLfloat light0_position[] = {50.0, 20.0, 10.0, 1.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+
+	const GLfloat light1_position[] = {-20.0, 70.0, -80.0, 1.0};
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 
   const GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
 
   const GLfloat light_color[] = {1.0, 1.0, 1.0, 1.0};
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, light_color);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light_color);
+
+	const GLfloat light1_color[] = {0.4, 0.4, 0.4, 1.0};
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light1_color);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_color);
 
   const GLfloat light_ambient_global[] = {0.2, 0.2, 0.2, 1.0}; // default is 0.2, 0.2, 0.2, 1.0
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 
 	// "Enable GL_COLOR_MATERIAL and set glColorMaterial to GL_AMBIENT_AND_DIFFUSE.
 	// This means that glMaterial will control the polygon's specular and emission
