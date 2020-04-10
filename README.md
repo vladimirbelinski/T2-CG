@@ -18,7 +18,11 @@ arquivo "Description T2.pdf".
 ### Compilação e execução
 
 Em ambiente Linux, estando na pasta onde os arquivos que compõem a resolução do
-trabalho se encontram, executar o comando 'make run'.
+trabalho se encontram, executar o comando abaixo:
+
+```
+make run
+```
 
 ### Utilização
 Para a movimentação da câmera, pressione:
