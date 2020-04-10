@@ -1,4 +1,4 @@
-# Computação Gráfica - Renderização de uma imagem/cena utilizando NURBS
+# Computação Gráfica - Renderização de uma imagem/cena utilizando NURBS (_Non Uniform Rational Basis Spline_)
 
 Trabalho apresentado ao Curso de Ciência da Computação da Universidade Federal
 da Fronteira Sul - UFFS, Campus Chapecó, como requisito parcial para aprovação
