@@ -48,7 +48,7 @@ Para a movimentação da câmera, pressione:
 
 ### Resultado final
 
-![Renderização final](link-to-image)
+![Renderização final](https://github.com/vladimirbelinski/T2-CG/blob/master/resultadoFinal.png)
 
 
 
