@@ -28,7 +28,7 @@ O código se encontra dividido em 3 arquivos: surface.cpp, surface.h e bmp.cpp
 uma espátula, uma bandeja, uma forma de pudim e uma cuia;
 - Apoio em um tampo (paralelepípedo) com textura de mármore;
 - 02 dos objetos são transparentes/semi-transparentes;
-- Existência de 2 fontes de luz;
+- Existência de 02 fontes de luz;
 - Visualização da cena em 16 pontos diferentes.
 
 ### Compilação e execução
